@@ -119,21 +119,19 @@
 // export default Unprocessedfiles;
 import React, { useState } from "react";
 import { Table, Modal, Button } from "antd";
-import { Image } from "image-js";  
 import { Link } from "react-router-dom";
-import "antd/dist/antd.min.css";
-import Header from "../../../initialpage/Sidebar/header";
-import Sidebar from "../../../initialpage/Sidebar/sidebar";
-import Offcanvas from "../../../Entryfile/offcanvance";
-import { getCroppedImg } from "./cropUtils"; 
+import Cropper from "react-easy-crop"; // Importing cropper component
+import { getCroppedImg } from "./cropUtils"; // Import the getCroppedImg function
 
 const Unprocessedfiles = () => {
   const [menu, setMenu] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [image, setImage] = useState(null); 
-  const [crop, setCrop] = useState({ x: 0, y: 0 }); 
-  const [rotation, setRotation] = useState(0); 
+  const [image, setImage] = useState(null); // State to hold the image data
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState(0);
+  const [zoom, setZoom] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [croppedImage, setCroppedImage] = useState(null);
 
   const toggleMobileMenu = () => {
     setMenu(!menu);
@@ -145,12 +143,10 @@ const Unprocessedfiles = () => {
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = async () => {
-        const buffer = new Uint8Array(reader.result);
-        const img = await Image.load(buffer); 
-        setImage(img.toDataURL()); 
+        setImage(reader.result); // Set the image data
+        setIsModalVisible(true); // Show the modal once the image is loaded
       };
-      reader.readAsArrayBuffer(file);
-      setIsModalVisible(true); 
+      reader.readAsDataURL(file);
     }
   };
 
@@ -161,19 +157,21 @@ const Unprocessedfiles = () => {
   const handleRotateRight = () => {
     setRotation(rotation + 90); // Rotate right
   };
+
   const handleCrop = async () => {
     try {
-      const croppedBlob = await getCroppedImg(image, crop, zoom, rotation);
+      const croppedImageUrl = await getCroppedImg(image, crop, zoom, rotation);
+      setCroppedImage(croppedImageUrl); // Show the cropped image preview
     } catch (err) {
       console.error("Error cropping image:", err);
     }
   };
 
   const handleSave = () => {
-    const apiData = { file: selectedFile };
+    const apiData = { file: selectedFile, croppedImage };
     console.log("Save file", apiData);
     alert("File saved successfully!");
-    setIsModalVisible(false); 
+    setIsModalVisible(false);
   };
 
   const data = [
@@ -209,8 +207,7 @@ const Unprocessedfiles = () => {
   return (
     <>
       <div className={`main-wrapper ${menu ? "slide-nav" : ""}`}>
-        <Header onMenuClick={() => toggleMobileMenu()} />
-        <Sidebar />
+        {/* Header and Sidebar */}
         <div className="page-wrapper">
           <div className="content container-fluid">
             <div className="page-header">
@@ -257,9 +254,32 @@ const Unprocessedfiles = () => {
         footer={null}
         width={800}
       >
-        {image && (
+        {image ? (
           <div className="file-viewer">
-            <img src={image} alt="cropped" style={{ transform: `rotate(${rotation}deg)` }} />
+            <div
+              className="crop-container"
+              style={{
+                position: "relative",
+                width: "100%",
+                height: "400px",
+                maxHeight: "500px", // Ensures the container doesn't become too small
+              }}
+            >
+              <Cropper
+                image={image}
+                crop={crop}
+                zoom={zoom}
+                rotation={rotation}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onRotationChange={setRotation}
+                aspect={1} // Set aspect ratio if needed
+                style={{
+                  width: "100%", // Ensure cropper takes full width
+                  height: "100%", // Ensure cropper takes full height
+                }}
+              />
+            </div>
             <div className="actions mt-3 text-center">
               <Button onClick={handleRotateLeft}>Rotate Left</Button>
               <Button onClick={handleRotateRight} className="mx-2">
@@ -270,11 +290,17 @@ const Unprocessedfiles = () => {
                 Save
               </Button>
             </div>
+            {croppedImage && (
+              <div>
+                <h4>Cropped Image Preview</h4>
+                <img src={croppedImage} alt="Cropped" style={{ width: "100%", maxHeight: "400px" }} />
+              </div>
+            )}
           </div>
+        ) : (
+          <div>Loading image...</div>
         )}
       </Modal>
-
-      <Offcanvas />
     </>
   );
 };

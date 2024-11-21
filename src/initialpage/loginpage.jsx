@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { getLoginData } from "../store/login";
 
 const Loginpage = (props) => {
   const history = useHistory();
+  const dispatch = useDispatch();
+
+  const token = useSelector((state) => state.login.token);
+  const login = useSelector((state) => state.login.loginData);
 
   const {
     register,
@@ -14,16 +20,18 @@ const Loginpage = (props) => {
 
   const [eye, setEye] = useState(true);
 
-
   const onEyeClick = () => {
     setEye(!eye);
   };
 
   const onSubmit = async (data) => {
     history.push("/app/main/dashboard");
+    // dispatch(getLoginData(data));
+    // if (login !== null) {
+    //   history.push("/app/main/dashboard");
+    // }
   };
 
- 
   return (
     <div className="account-page">
       <div className="main-wrapper">
@@ -39,12 +47,12 @@ const Loginpage = (props) => {
                 <div>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="input-block">
-                      <label>Email Address</label>
+                      <label>Username</label>
                       <input
                         type="text"
-                        {...register("email")}
+                        {...register("username")}
                         className="form-control"
-                        placeholder="Enter your email address"
+                        placeholder="Enter your username"
                       />
                       <small>{errors.email?.message}</small>
                     </div>

@@ -1,19 +1,19 @@
 
-// export const API_HOST = "http://103.86.182.148:8000/"; // newdev
+export const API_HOST = "http://103.86.182.148:8000/"; // newdev
 
-// export const defaultHeaders = {
-//   "Content-Type": "application/json",
-// };
+export const defaultHeaders = {
+  "Content-Type": "application/json",
+};
 
-// export const defaultHeadersForSuggestion = {
-//   "Content-Type": "multipart/form-data",
-// };
+export const defaultHeadersForSuggestion = {
+  "Content-Type": "multipart/form-data",
+};
 
-// export const GET_API = "GET";
-// export const POST_API = "POST";
-// export const PUT_API = "PUT";
-// export const DELETE_API = "DELETE";
-// export const PATCH_API = "PATCH";
+export const GET_API = "GET";
+export const POST_API = "POST";
+export const PUT_API = "PUT";
+export const DELETE_API = "DELETE";
+export const PATCH_API = "PATCH";
 
 // export const globalLanguage = [
 //   {

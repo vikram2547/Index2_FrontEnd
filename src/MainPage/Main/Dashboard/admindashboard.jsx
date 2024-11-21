@@ -1,15 +1,15 @@
-// import React, { useState, useRef, useEffect } from "react";
+
+// import React, { useState } from "react";
 // import { withRouter } from "react-router-dom";
 // import Sidebar from "../../../initialpage/Sidebar/sidebar";
 // import Offcanvas from "../../../Entryfile/offcanvance/index.jsx";
 // import "../../index.css";
-// import { useHistory } from "react-router-dom";
+// import DWT from "../../../DynamsoftSDK";
 
 // const AdminDashboard = () => {
-//   const dwtRef = useRef(null); 
-//   const history = useHistory();
-//   const [fileName, setFileName] = useState("No file name available");
 //   const [showForm, setShowForm] = useState(false);
+//   const [showScanner, setShowScanner] = useState(false);
+//   const [fileName, setFileName] = useState("No file name available");
 //   const [docType, setDocType] = useState("");
 //   const [formData, setFormData] = useState({
 //     officeCode: "",
@@ -39,10 +39,15 @@
 //   };
 
 //   const handleScanClick = () => {
-//     history.push("/app/main/scanner");
+//     setShowScanner(true);
+//     setShowForm(false); // Ensure the form is hidden
 //   };
 
- 
+//   const handleFormClick = () => {
+//     setShowForm(true);
+//     setShowScanner(false); // Ensure the scanner is hidden
+//   };
+
 //   return (
 //     <>
 //       <div>
@@ -64,11 +69,10 @@
 //               <div className="col-md-2">
 //                 <button
 //                   className="btn btn-primary btn-block"
-//                   onClick={handleScanClick} // Trigger scan
+//                   onClick={handleScanClick} // Trigger scanner
 //                 >
 //                   Scan Document
 //                 </button>
-               
 //               </div>
 //               <div className="col-md-6">
 //                 <input
@@ -81,15 +85,31 @@
 //               <div className="col-md-4">
 //                 <button
 //                   className="btn btn-success btn-block"
-//                   onClick={() => setShowForm(!showForm)}
+//                   onClick={handleFormClick} // Trigger form
 //                 >
 //                   Add/Change File Name
 //                 </button>
 //               </div>
 //             </div>
-//             <div id="dwtcontrolContainer" style={{ display: "none" }}></div>{" "}
-//             {/* DWT container */}
-//             {/* Conditional Form */}
+
+//             {/* Scanner Section */}
+//             {showScanner && (
+//               <div className="scanner-container">
+//                 <DWT
+//                   features={[
+//                     "scan",
+//                     "camera",
+//                     "load",
+//                     "save",
+//                     "upload",
+//                     "barcode",
+//                     "uploader",
+//                   ]}
+//                 />
+//               </div>
+//             )}
+
+//             {/* Form Section */}
 //             {showForm && (
 //               <div className="card">
 //                 <div className="card-header">
@@ -113,47 +133,47 @@
 //                       </select>
 //                     </div>
 
-//                     {/* Common Fields */}
-//                     {(docType === "Index File" ||
-//                       docType === "Municipal Town Property Register" ||
-//                       docType === "Register Of Holdings" ||
-//                       docType === "Regular Document Register" ||
-//                       docType === "Loan Order Register" ||
-//                       docType === "Memo Order Register" ||
-//                       docType === "Court Order Register") && (
-//                       <>
-//                         <div className="form-group">
-//                           <label>Office Code</label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="officeCode"
-//                             value={formData.officeCode}
-//                             onChange={handleInputChange}
-//                           />
-//                         </div>
-//                         <div className="form-group">
-//                           <label>Volume No</label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="volumeNo"
-//                             value={formData.volumeNo}
-//                             onChange={handleInputChange}
-//                           />
-//                         </div>
-//                         <div className="form-group">
-//                           <label>Year</label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="year"
-//                             value={formData.year}
-//                             onChange={handleInputChange}
-//                           />
-//                         </div>
-//                       </>
-//                     )}
+                    // {/* Common Fields */}
+                    // {(docType === "Index File" ||
+                    //   docType === "Municipal Town Property Register" ||
+                    //   docType === "Register Of Holdings" ||
+                    //   docType === "Regular Document Register" ||
+                    //   docType === "Loan Order Register" ||
+                    //   docType === "Memo Order Register" ||
+                    //   docType === "Court Order Register") && (
+                    //   <>
+                    //     <div className="form-group">
+                    //       <label>Office Code</label>
+                    //       <input
+                    //         type="text"
+                    //         className="form-control"
+                    //         name="officeCode"
+                    //         value={formData.officeCode}
+                    //         onChange={handleInputChange}
+                    //       />
+                    //     </div>
+                    //     <div className="form-group">
+                    //       <label>Volume No</label>
+                    //       <input
+                    //         type="text"
+                    //         className="form-control"
+                    //         name="volumeNo"
+                    //         value={formData.volumeNo}
+                    //         onChange={handleInputChange}
+                    //       />
+                    //     </div>
+                    //     <div className="form-group">
+                    //       <label>Year</label>
+                    //       <input
+                    //         type="text"
+                    //         className="form-control"
+                    //         name="year"
+                    //         value={formData.year}
+                    //         onChange={handleInputChange}
+                    //       />
+                    //     </div>
+                    //   </>
+                    // )}
 //                     {/* Additional Fields for Specific Types */}
 //                     {(docType === "Regular Document Register" ||
 //                       docType === "Loan Order Register" ||
@@ -209,6 +229,7 @@ import DWT from "../../../DynamsoftSDK";
 const AdminDashboard = () => {
   const [showForm, setShowForm] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
   const [fileName, setFileName] = useState("No file name available");
   const [docType, setDocType] = useState("");
   const [formData, setFormData] = useState({
@@ -218,6 +239,7 @@ const AdminDashboard = () => {
     bookNo: "",
     runningNo: "",
   });
+  const [compareData, setCompareData] = useState({});
 
   const documentTypes = [
     "Index File",
@@ -233,20 +255,47 @@ const AdminDashboard = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleCompareInputChange = (e) => {
+    setCompareData({ ...compareData, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("File name generated successfully!");
+    localStorage.setItem("formData", JSON.stringify(formData));
+    setShowComparison(true);
+    setShowForm(false);
+    alert("File name generated and data saved successfully!");
+  };
+
+  const handleSave = () => {
+    const storedData = JSON.parse(localStorage.getItem("formData"));
+    const isMatching = Object.keys(storedData).every(
+      (key) => storedData[key] === compareData[key]
+    );
+
+    if (isMatching) {
+      alert("Data matches successfully!");
+      // Trigger API call here if needed
+    } else {
+      alert("Error: Data does not match!");
+    }
   };
 
   const handleScanClick = () => {
     setShowScanner(true);
-    setShowForm(false); // Ensure the form is hidden
+    setShowForm(false);
+    setShowComparison(false);
   };
 
   const handleFormClick = () => {
     setShowForm(true);
-    setShowScanner(false); // Ensure the scanner is hidden
+    setShowScanner(false);
+    setShowComparison(false);
   };
+
+  // Function to check if document type is one of the excluded types
+  const isExcludedDocumentType = () =>
+    ["Index File", "Municipal Town Property Register", "Register Of Holdings"].includes(docType);
 
   return (
     <>
@@ -269,7 +318,7 @@ const AdminDashboard = () => {
               <div className="col-md-2">
                 <button
                   className="btn btn-primary btn-block"
-                  onClick={handleScanClick} // Trigger scanner
+                  onClick={handleScanClick}
                 >
                   Scan Document
                 </button>
@@ -285,7 +334,7 @@ const AdminDashboard = () => {
               <div className="col-md-4">
                 <button
                   className="btn btn-success btn-block"
-                  onClick={handleFormClick} // Trigger form
+                  onClick={handleFormClick}
                 >
                   Add/Change File Name
                 </button>
@@ -334,13 +383,7 @@ const AdminDashboard = () => {
                     </div>
 
                     {/* Common Fields */}
-                    {(docType === "Index File" ||
-                      docType === "Municipal Town Property Register" ||
-                      docType === "Register Of Holdings" ||
-                      docType === "Regular Document Register" ||
-                      docType === "Loan Order Register" ||
-                      docType === "Memo Order Register" ||
-                      docType === "Court Order Register") && (
+                    {docType && (
                       <>
                         <div className="form-group">
                           <label>Office Code</label>
@@ -372,34 +415,32 @@ const AdminDashboard = () => {
                             onChange={handleInputChange}
                           />
                         </div>
-                      </>
-                    )}
-                    {/* Additional Fields for Specific Types */}
-                    {(docType === "Regular Document Register" ||
-                      docType === "Loan Order Register" ||
-                      docType === "Memo Order Register" ||
-                      docType === "Court Order Register") && (
-                      <>
-                        <div className="form-group">
-                          <label>Book No</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="bookNo"
-                            value={formData.bookNo}
-                            onChange={handleInputChange}
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label>Running No</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="runningNo"
-                            value={formData.runningNo}
-                            onChange={handleInputChange}
-                          />
-                        </div>
+
+                        {/* Conditionally render Book No and Running No */}
+                        {!isExcludedDocumentType() && (
+                          <>
+                            <div className="form-group">
+                              <label>Book No</label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                name="bookNo"
+                                value={formData.bookNo}
+                                onChange={handleInputChange}
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label>Running No</label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                name="runningNo"
+                                value={formData.runningNo}
+                                onChange={handleInputChange}
+                              />
+                            </div>
+                          </>
+                        )}
                       </>
                     )}
 
@@ -407,6 +448,71 @@ const AdminDashboard = () => {
                       Generate File Name
                     </button>
                   </form>
+                </div>
+              </div>
+            )}
+
+            {/* Comparison Section */}
+            {showComparison && (
+              <div className="row">
+                {/* Left Form (Masked) */}
+                <div className="col-md-6">
+                  <div className="card">
+                    <div className="card-header">
+                      <h4>Original Data (Masked)</h4>
+                    </div>
+                    <div className="card-body">
+                      {Object.entries(formData).map(([key, value]) => (
+                        <div className="form-group" key={key}>
+                          <label>{key}</label>
+                          {/* Conditionally hide Book No and Running No */}
+                          {(key === "bookNo" || key === "runningNo") && isExcludedDocumentType() ? null : (
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={"*".repeat(value.length)}
+                              readOnly
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Form (Editable) */}
+                <div className="col-md-6">
+                  <div className="card">
+                    <div className="card-header">
+                      <h4>Re-Enter Data</h4>
+                    </div>
+                    <div className="card-body">
+                      {Object.keys(formData).map((key) => (
+                        <div className="form-group" key={key}>
+                          <label>{key}</label>
+                          {/* Conditionally hide Book No and Running No */}
+                          {(key === "bookNo" || key === "runningNo") && isExcludedDocumentType() ? null : (
+                            <input
+                              type="text"
+                              className="form-control"
+                              name={key}
+                              value={compareData[key] || ""}
+                              onChange={handleCompareInputChange}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-md-12 text-center mt-3">
+                  <button
+                    className="btn btn-success mr-3"
+                    onClick={handleSave}
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
             )}
