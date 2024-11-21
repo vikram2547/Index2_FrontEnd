@@ -125,7 +125,7 @@ import "antd/dist/antd.min.css";
 import Header from "../../../initialpage/Sidebar/header";
 import Sidebar from "../../../initialpage/Sidebar/sidebar";
 import Offcanvas from "../../../Entryfile/offcanvance";
-import { getCroppedImg } from "./cropUtils"; // Your cropping logic
+import { getCroppedImg } from "./cropUtils"; 
 
 const Unprocessedfiles = () => {
   const [menu, setMenu] = useState(false);
@@ -164,8 +164,6 @@ const Unprocessedfiles = () => {
   const handleCrop = async () => {
     try {
       const croppedBlob = await getCroppedImg(image, crop, zoom, rotation);
-      console.log("Cropped Image Blob:", croppedBlob);
-      alert("Image cropped successfully!");
     } catch (err) {
       console.error("Error cropping image:", err);
     }
@@ -175,7 +173,7 @@ const Unprocessedfiles = () => {
     const apiData = { file: selectedFile };
     console.log("Save file", apiData);
     alert("File saved successfully!");
-    setIsModalVisible(false); // Close the modal
+    setIsModalVisible(false); 
   };
 
   const data = [
