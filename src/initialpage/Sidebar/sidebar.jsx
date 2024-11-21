@@ -112,7 +112,7 @@ const Sidebar = (props) => {
               <li className="submenu">
                 <Link to="/app/main/unprocessed-files">
                 <i className="la la-exclamation-circle" />{" "}
-                  <span> Unprocessed Files</span>{" "}
+                  <span> QC Files</span>{" "}
                 </Link>
               </li>
             </ul>
