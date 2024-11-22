@@ -2,6 +2,7 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import login from "./login";
 import addfilename from "./addfilename";
+import uploadServer from "./uploadtoserver";
 // import allemployee from "./allemployee";
 // import adduserSlice from "./adduser";
 // import reportsto from "./reportsto";
@@ -30,6 +31,7 @@ import addfilename from "./addfilename";
 const rootReducer = combineReducers({
   login,
   addfilename,
+  uploadServer,
   // allemployee,
   // reportsto,
   // getprofileinfo,

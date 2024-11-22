@@ -29,6 +29,7 @@ const Loginpage = (props) => {
   };
   useEffect(() => {
     if (token) {
+      localStorage.setItem("token", token);
       history.push("/app/main/dashboard");
     }
   }, [token, history]);
