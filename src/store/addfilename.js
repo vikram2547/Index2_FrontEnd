@@ -30,16 +30,16 @@ export const addfilename = createSlice({
 });
 
 // Async thunk action
-export const addFileName = (data) => async (dispatch) => {
-//   const localHeader = {
-//     Authorization: `Token ${token}`,
-//   };
+export const addFileName = (token,data) => async (dispatch) => {
+  const localHeader = {
+    Authorization: `Token ${token}`,
+  };
 
   try {
     const res = await axios({
       method: "post",
       url: `${API_HOST}scan/file-name/`,
-    //   headers: localHeader,
+      headers: localHeader,
       data: data,
     });
     dispatch(postSuccess(res?.data));

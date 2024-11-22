@@ -25,11 +25,11 @@ const Loginpage = (props) => {
   };
 
   const onSubmit = async (data) => {
-    history.push("/app/main/dashboard");
-    // dispatch(getLoginData(data));
-    // if (login !== null) {
-    //   history.push("/app/main/dashboard");
-    // }
+    // history.push("/app/main/dashboard");
+    dispatch(getLoginData(data));
+    if (login !== null) {
+      history.push("/app/main/dashboard");
+    }
   };
 
   return (

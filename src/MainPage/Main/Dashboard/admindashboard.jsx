@@ -1,231 +1,12 @@
-// import React, { useState } from "react";
-// import { withRouter } from "react-router-dom";
-// import Sidebar from "../../../initialpage/Sidebar/sidebar";
-// import Offcanvas from "../../../Entryfile/offcanvance/index.jsx";
-// import "../../index.css";
-// import DWT from "../../../DynamsoftSDK";
 
-// const AdminDashboard = () => {
-//   const [showForm, setShowForm] = useState(false);
-//   const [showScanner, setShowScanner] = useState(false);
-//   const [fileName, setFileName] = useState("No file name available");
-//   const [docType, setDocType] = useState("");
-//   const [formData, setFormData] = useState({
-//     officeCode: "",
-//     volumeNo: "",
-//     year: "",
-//     bookNo: "",
-//     runningNo: "",
-//   });
-
-//   const documentTypes = [
-//     "Index File",
-//     "Municipal Town Property Register",
-//     "Register Of Holdings",
-//     "Regular Document Register",
-//     "Loan Order Register",
-//     "Memo Order Register",
-//     "Court Order Register",
-//   ];
-
-//   const handleInputChange = (e) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     alert("File name generated successfully!");
-//   };
-
-//   const handleScanClick = () => {
-//     setShowScanner(true);
-//     setShowForm(false); // Ensure the form is hidden
-//   };
-
-//   const handleFormClick = () => {
-//     setShowForm(true);
-//     setShowScanner(false); // Ensure the scanner is hidden
-//   };
-
-//   return (
-//     <>
-//       <div>
-//         <Sidebar />
-//         <div className="page-wrapper">
-//           <div className="content container-fluid">
-//             <div className="page-header">
-//               <div className="row">
-//                 <div className="col-sm-12">
-//                   <h3 className="page-title">Welcome</h3>
-//                   <ul className="breadcrumb">
-//                     <li className="breadcrumb-item active">Dashboard</li>
-//                   </ul>
-//                 </div>
-//               </div>
-//             </div>
-//             {/* File Input Section */}
-//             <div className="row align-items-center mb-4">
-//               <div className="col-md-2">
-//                 <button
-//                   className="btn btn-primary btn-block"
-//                   onClick={handleScanClick} // Trigger scanner
-//                 >
-//                   Scan Document
-//                 </button>
-//               </div>
-//               <div className="col-md-6">
-//                 <input
-//                   type="text"
-//                   className="form-control"
-//                   readOnly
-//                   value={fileName}
-//                 />
-//               </div>
-//               <div className="col-md-4">
-//                 <button
-//                   className="btn btn-success btn-block"
-//                   onClick={handleFormClick} // Trigger form
-//                 >
-//                   Add/Change File Name
-//                 </button>
-//               </div>
-//             </div>
-
-//             {/* Scanner Section */}
-//             {showScanner && (
-//               <div className="scanner-container">
-//                 <DWT
-//                   features={[
-//                     "scan",
-//                     "camera",
-//                     "load",
-//                     "save",
-//                     "upload",
-//                     "barcode",
-//                     "uploader",
-//                   ]}
-//                 />
-//               </div>
-//             )}
-
-//             {/* Form Section */}
-//             {showForm && (
-//               <div className="card">
-//                 <div className="card-header">
-//                   <h4>Create File Name</h4>
-//                 </div>
-//                 <div className="card-body">
-//                   <form onSubmit={handleSubmit}>
-//                     <div className="form-group">
-//                       <label>Document Type</label>
-//                       <select
-//                         className="form-control"
-//                         value={docType}
-//                         onChange={(e) => setDocType(e.target.value)}
-//                       >
-//                         <option value="">Select Document Type</option>
-//                         {documentTypes.map((type) => (
-//                           <option key={type} value={type}>
-//                             {type}
-//                           </option>
-//                         ))}
-//                       </select>
-//                     </div>
-
-// {/* Common Fields */}
-// {(docType === "Index File" ||
-//   docType === "Municipal Town Property Register" ||
-//   docType === "Register Of Holdings" ||
-//   docType === "Regular Document Register" ||
-//   docType === "Loan Order Register" ||
-//   docType === "Memo Order Register" ||
-//   docType === "Court Order Register") && (
-//   <>
-//     <div className="form-group">
-//       <label>Office Code</label>
-//       <input
-//         type="text"
-//         className="form-control"
-//         name="officeCode"
-//         value={formData.officeCode}
-//         onChange={handleInputChange}
-//       />
-//     </div>
-//     <div className="form-group">
-//       <label>Volume No</label>
-//       <input
-//         type="text"
-//         className="form-control"
-//         name="volumeNo"
-//         value={formData.volumeNo}
-//         onChange={handleInputChange}
-//       />
-//     </div>
-//     <div className="form-group">
-//       <label>Year</label>
-//       <input
-//         type="text"
-//         className="form-control"
-//         name="year"
-//         value={formData.year}
-//         onChange={handleInputChange}
-//       />
-//     </div>
-//   </>
-// )}
-//                     {/* Additional Fields for Specific Types */}
-//                     {(docType === "Regular Document Register" ||
-//                       docType === "Loan Order Register" ||
-//                       docType === "Memo Order Register" ||
-//                       docType === "Court Order Register") && (
-//                       <>
-//                         <div className="form-group">
-//                           <label>Book No</label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="bookNo"
-//                             value={formData.bookNo}
-//                             onChange={handleInputChange}
-//                           />
-//                         </div>
-//                         <div className="form-group">
-//                           <label>Running No</label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="runningNo"
-//                             value={formData.runningNo}
-//                             onChange={handleInputChange}
-//                           />
-//                         </div>
-//                       </>
-//                     )}
-
-//                     <button type="submit" className="btn btn-primary mt-3">
-//                       Generate File Name
-//                     </button>
-//                   </form>
-//                 </div>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </div>
-//       <Offcanvas />
-//     </>
-//   );
-// };
-
-// export default withRouter(AdminDashboard);
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import Sidebar from "../../../initialpage/Sidebar/sidebar";
 import Offcanvas from "../../../Entryfile/offcanvance/index.jsx";
 import "../../index.css";
 import DWT from "../../../DynamsoftSDK";
-import { addfilename } from "../../../store/addfilename.js";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addFileName } from "../../../store/addfilename";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -235,11 +16,11 @@ const AdminDashboard = () => {
   const [fileName, setFileName] = useState("No file name available");
   const [docType, setDocType] = useState("");
   const [formData, setFormData] = useState({
-    officeCode: "",
-    volumeNo: "",
+    office_code: "",
+    volume_no: "",
     year: "",
-    bookNo: "",
-    runningNo: "",
+    book_no: "",
+    running_no: "",
   });
   const [compareData, setCompareData] = useState({});
 
@@ -252,6 +33,8 @@ const AdminDashboard = () => {
     "Memo Order Register",
     "Court Order Register",
   ];
+
+  const token = useSelector((state) => state.login.token);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -269,20 +52,65 @@ const AdminDashboard = () => {
     alert("File name generated and data saved successfully!");
   };
 
+  // const handleSave = () => {
+  //   const storedData = JSON.parse(localStorage.getItem("formData"));
+  //   const isMatching = Object.keys(storedData).every(
+  //     (key) =>
+  //       (storedData[key]?.trim?.() || "") === (formData[key]?.trim?.() || "")
+  //   );
+  
+  //   if (isMatching) {
+  //     dispatch(addFileName(token,formData)); 
+  //     alert("Data matches successfully!");
+  //   } else {
+  //     alert("Error: Data does not match!");
+  //   }
+  // };
+  
   const handleSave = () => {
     const storedData = JSON.parse(localStorage.getItem("formData"));
-    const isMatching = Object.keys(storedData).every(
-      (key) => storedData[key] === compareData[key]
+  
+    const documentTypeMapping = {
+      "Index File": { document_type: "Index", requiredFields: ["office_code", "year", "volume_no", "part"] },
+      "Municipal Town Property Register": { document_type: "MTPR", requiredFields: ["office_code", "year", "volume_no", "part"] },
+      "Register Of Holdings": { document_type: "ROH", requiredFields: ["office_code", "year", "volume_no", "part"] },
+      "Regular Document Register": { document_type: "R", requiredFields: ["office_code", "book_no", "running_no", "year"] },
+      "Loan Order Register": { document_type: "LO", requiredFields: ["office_code", "book_no", "running_no", "year"] },
+      "Memo Order Register": { document_type: "MO", requiredFields: ["office_code", "book_no", "running_no", "year"] },
+      "Court Order Register": { document_type: "CO", requiredFields: ["office_code", "book_no", "running_no", "year"] },
+    };
+  
+    const mapping = documentTypeMapping[docType];
+  
+    if (!mapping) {
+      alert("Error: Invalid document type!");
+      return;
+    }
+  
+    const { document_type, requiredFields } = mapping;
+  
+    // Construct payload with relevant fields only
+    const payload = requiredFields.reduce((acc, field) => {
+      if (formData[field]) {
+        acc[field] = formData[field].trim();
+      }
+      return acc;
+    }, {});
+  
+    payload["document_type"] = document_type;
+  
+    const isMatching = Object.keys(payload).every(
+      (key) => (storedData[key]?.trim?.() || "") === (formData[key]?.trim?.() || "")
     );
-
+  
     if (isMatching) {
-      dispatch(addfilename(data));
+      dispatch(addFileName(token, payload)); 
       alert("Data matches successfully!");
     } else {
       alert("Error: Data does not match!");
     }
   };
-
+  
   const handleScanClick = () => {
     setShowScanner(true);
     setShowForm(false);
@@ -396,8 +224,8 @@ const AdminDashboard = () => {
                           <input
                             type="text"
                             className="form-control"
-                            name="officeCode"
-                            value={formData.officeCode}
+                            name="office_code"
+                            value={formData.office_code}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -406,8 +234,8 @@ const AdminDashboard = () => {
                           <input
                             type="text"
                             className="form-control"
-                            name="volumeNo"
-                            value={formData.volumeNo}
+                            name="volume_no"
+                            value={formData.volume_no}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -430,8 +258,8 @@ const AdminDashboard = () => {
                               <input
                                 type="text"
                                 className="form-control"
-                                name="bookNo"
-                                value={formData.bookNo}
+                                name="book_no"
+                                value={formData.book_no}
                                 onChange={handleInputChange}
                               />
                             </div>
@@ -440,8 +268,8 @@ const AdminDashboard = () => {
                               <input
                                 type="text"
                                 className="form-control"
-                                name="runningNo"
-                                value={formData.runningNo}
+                                name="running_no"
+                                value={formData.running_no}
                                 onChange={handleInputChange}
                               />
                             </div>
@@ -471,7 +299,7 @@ const AdminDashboard = () => {
                       {Object.entries(formData).map(([key, value]) => {
                         // Conditionally hide Book No and Running No
                         if (
-                          (key === "bookNo" || key === "runningNo") &&
+                          (key === "book_no" || key === "running_no") &&
                           isExcludedDocumentType()
                         ) {
                           return null;
@@ -502,7 +330,7 @@ const AdminDashboard = () => {
                       {Object.keys(formData).map((key) => {
                         // Conditionally hide Book No and Running No
                         if (
-                          (key === "bookNo" || key === "runningNo") &&
+                          (key === "book_no" || key === "running_no") &&
                           isExcludedDocumentType()
                         ) {
                           return null;
