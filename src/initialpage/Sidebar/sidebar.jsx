@@ -102,17 +102,24 @@ const Sidebar = (props) => {
                   <i className="la la-dashboard" /> <span> Dashboard</span>{" "}
                 </Link>
               </li>
-              <li className="submenu">
-                <Link to="/app/main/processed-files">
-                <i className="la la-check-circle" />{" "}
-                  <span> Processed Files</span>{" "}
-                </Link>
-              </li>
+             
 
               <li className="submenu">
                 <Link to="/app/main/unprocessed-files">
                 <i className="la la-exclamation-circle" />{" "}
+                  <span> Unprocessed Files</span>{" "}
+                </Link>
+              </li>
+              <li className="submenu">
+                <Link to="/app/main/processed-files">
+                <i className="la la-check-circle" />{" "}
                   <span> QC Files</span>{" "}
+                </Link>
+              </li>
+              <li className="submenu">
+                <Link to="/app/main/qcchecked-files">
+                <i className="la la-check-circle" />{" "}
+                  <span> QC Checked Files</span>{" "}
                 </Link>
               </li>
             </ul>

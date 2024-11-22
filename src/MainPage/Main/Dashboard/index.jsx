@@ -4,7 +4,8 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import Admindashboard from './admindashboard';
 import processedfiles from './processedfiles';
 import unprocessedfiles from './unprocessedfiles';
-import Scanner from './Scanner';
+import ImageViewerWithCropper from './ImageViewer';
+import QcCheckedFiles from './qccheckedfiles';
 // import Employeedashboard from './employeedashboard';
 
 const DashboardRoute = ({ match }) => (
@@ -13,7 +14,9 @@ const DashboardRoute = ({ match }) => (
       <Route path={`${match.url}/dashboard`} component={Admindashboard} />
       <Route path={`${match.url}/processed-files`} component={processedfiles} />
       <Route path={`${match.url}/unprocessed-files`} component={unprocessedfiles} />
-      {/* <Route path={`${match.url}/scanner`} component={Scanner} /> */}
+      <Route path={`${match.url}/image-viewer`} component={ImageViewerWithCropper} />
+      <Route path={`${match.url}/qcchecked-files`} component={QcCheckedFiles} />
+
 
       {/* <Route path={`${match.url}/employee-dashboard`} component={Employeedashboard} /> */}
    </Switch>

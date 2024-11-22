@@ -7,20 +7,20 @@ import Sidebar from "../../../initialpage/Sidebar/sidebar";
 import Offcanvas from "../../../Entryfile/offcanvance";
 import { useDispatch, useSelector } from "react-redux";
 import { getProcessedFile } from "../../../store/getprocessedfile";
+import { getQcCheckedFile } from "../../../store/getqccheckedfiles";
 
-const Processedfiles = () => {
+const QcCheckedFiles = () => {
   const [menu, setMenu] = useState(false);
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.login.token);
   const data =
-  useSelector((state) => state.getprocessedfile.getprocessedfile) || [];
-  console.log(data,"data");
-  
+    useSelector((state) => state.getprocessedfile.getprocessedfile) || [];
+  console.log(data, "data");
+
   const toggleMobileMenu = () => {
     setMenu(!menu);
   };
- 
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -43,35 +43,30 @@ const Processedfiles = () => {
       render: (record) => (
         <div className="action-icons text-end">
           <button
-            onClick={() => handleApprove(record)}
-            className="btn btn-success action-icon"
+            onClick={() => handleView(record)} // Replace handleApprove with handleView
+            className="btn btn-info action-icon"
           >
-            Approve
+            View
           </button>
         </div>
       ),
-    }
-    
+    },
   ];
 
   useEffect(() => {
     if (token) {
-      dispatch(getProcessedFile(token));
+      dispatch(getQcCheckedFile(token));
     }
   }, [dispatch, token]);
 
-  const handleApprove = (record) => {
-    
-  };
-  
-  
+  const handleView = (record) => {};
+
   return (
     <>
       <div className={`main-wrapper ${menu ? "slide-nav" : ""}`}>
         <Header onMenuClick={() => toggleMobileMenu()} />
         <Sidebar />
         <div className="page-wrapper">
-          
           {/* Page Content */}
           <div className="content container-fluid">
             {/* Page Header */}
@@ -83,9 +78,7 @@ const Processedfiles = () => {
                     <li className="breadcrumb-item">
                       <Link to="/app/main/dashboard">Dashboard</Link>
                     </li>
-                    <li className="breadcrumb-item active">
-                      Processed Files
-                    </li>
+                    <li className="breadcrumb-item active">Approved Files</li>
                   </ul>
                 </div>
               </div>
@@ -121,4 +114,4 @@ const Processedfiles = () => {
   );
 };
 
-export default Processedfiles;
+export default QcCheckedFiles;

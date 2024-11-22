@@ -6,6 +6,9 @@ import getunprocessedfiles from "./getunprocesedfiles";
 import uploadserver from "./uploadtoserver";
 import getfile from "./getfile";
 import addcropimage from "./addcropimage";
+import getprocessedfile from "./getprocessedfile";
+import getqccheckedfiles from "./getqccheckedfiles";
+
 // import allemployee from "./allemployee";
 // import adduserSlice from "./adduser";
 // import reportsto from "./reportsto";
@@ -38,6 +41,8 @@ const rootReducer = combineReducers({
   getunprocessedfiles,
   getfile,
   addcropimage,
+  getprocessedfile,
+  getqccheckedfiles,
   // allemployee,
   // reportsto,
   // getprofileinfo,
