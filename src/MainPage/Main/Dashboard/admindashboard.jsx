@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
 import Sidebar from "../../../initialpage/Sidebar/sidebar";
 import Offcanvas from "../../../Entryfile/offcanvance/index.jsx";
@@ -35,6 +35,17 @@ const AdminDashboard = () => {
   ];
 
   const token = useSelector((state) => state.login.token);
+  const officeCode = useSelector((state) => state.login.office_code);
+  const FileNameSelector = useSelector((state) => state.addfilename.filename);
+  console.log(FileNameSelector,"FileNameSelector");
+  
+
+  useEffect(() => {
+    if (FileNameSelector) {
+      setFileName(FileNameSelector);
+    }
+  }, [FileNameSelector]);  
+
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,26 +57,13 @@ const AdminDashboard = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem("formData", JSON.stringify(formData));
+    const dataWithOfficeCode = { ...formData, office_code: officeCode };
+    localStorage.setItem("formData", JSON.stringify(dataWithOfficeCode,));
     setShowComparison(true);
     setShowForm(false);
     alert("File name generated and data saved successfully!");
   };
 
-  // const handleSave = () => {
-  //   const storedData = JSON.parse(localStorage.getItem("formData"));
-  //   const isMatching = Object.keys(storedData).every(
-  //     (key) =>
-  //       (storedData[key]?.trim?.() || "") === (formData[key]?.trim?.() || "")
-  //   );
-  
-  //   if (isMatching) {
-  //     dispatch(addFileName(token,formData)); 
-  //     alert("Data matches successfully!");
-  //   } else {
-  //     alert("Error: Data does not match!");
-  //   }
-  // };
   
   const handleSave = () => {
     const storedData = JSON.parse(localStorage.getItem("formData"));
@@ -91,9 +89,7 @@ const AdminDashboard = () => {
   
     // Construct payload with relevant fields only
     const payload = requiredFields.reduce((acc, field) => {
-      if (formData[field]) {
-        acc[field] = formData[field].trim();
-      }
+      acc[field] = field === "office_code" ? officeCode : formData[field]?.trim();
       return acc;
     }, {});
   
@@ -148,32 +144,64 @@ const AdminDashboard = () => {
               </div>
             </div>
             {/* File Input Section */}
+            {!FileNameSelector ? (
+            <>
+              {/* File Input Section */}
+              <div className="row align-items-center mb-4">
+                <div className="col-md-2">
+                  <button
+                    className="btn btn-primary btn-block"
+                    onClick={handleScanClick}
+                  >
+                    Scan Document
+                  </button>
+                </div>
+                <div className="col-md-6">
+                  <input
+                    type="text"
+                    className="form-control"
+                    readOnly
+                    value={fileName}
+                  />
+                </div>
+                <div className="col-md-4">
+                  <button
+                    className="btn btn-success btn-block"
+                    onClick={handleFormClick}
+                  >
+                    Add/Change File Name
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
             <div className="row align-items-center mb-4">
-              <div className="col-md-2">
-                <button
-                  className="btn btn-primary btn-block"
-                  onClick={handleScanClick}
-                >
-                  Scan Document
-                </button>
+                <div className="col-md-2">
+                  <button
+                    className="btn btn-primary btn-block"
+                    onClick={handleScanClick}
+                  >
+                    Scan Document
+                  </button>
+                </div>
+                <div className="col-md-6">
+                  <input
+                    type="text"
+                    className="form-control"
+                    readOnly
+                    value={fileName}
+                  />
+                </div>
+                <div className="col-md-4">
+                  <button
+                    className="btn btn-success btn-block"
+                    onClick={handleFormClick}
+                  >
+                    Add/Change File Name
+                  </button>
+                </div>
               </div>
-              <div className="col-md-6">
-                <input
-                  type="text"
-                  className="form-control"
-                  readOnly
-                  value={fileName}
-                />
-              </div>
-              <div className="col-md-4">
-                <button
-                  className="btn btn-success btn-block"
-                  onClick={handleFormClick}
-                >
-                  Add/Change File Name
-                </button>
-              </div>
-            </div>
+          )}
 
             {/* Scanner Section */}
             {showScanner && (
@@ -220,15 +248,14 @@ const AdminDashboard = () => {
                     {docType && (
                       <>
                         <div className="form-group">
-                          <label>Office Code</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="office_code"
-                            value={formData.office_code}
-                            onChange={handleInputChange}
-                          />
-                        </div>
+                      <label>Office Code</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={officeCode}
+                        readOnly
+                      />
+                    </div>
                         <div className="form-group">
                           <label>Volume No</label>
                           <input

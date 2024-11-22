@@ -7,6 +7,7 @@ import revertAll from "./action";
 const initialState = {
   addfilenames: null,
   error: null,
+  filename: null,
 };
 
 // Slice
@@ -16,6 +17,7 @@ export const addfilename = createSlice({
   reducers: {
     postSuccess: (state, action) => {
       state.addfilenames = action.payload;
+      state.filename = action.payload?.filename;
       state.error = null; 
     },
     
@@ -43,6 +45,7 @@ export const addFileName = (token,data) => async (dispatch) => {
       data: data,
     });
     dispatch(postSuccess(res?.data));
+    
   } catch (error) {
     console.log("error", error);
     dispatch(addFileFailure(error.response?.data || "An error occurred")); // Dispatch failure action

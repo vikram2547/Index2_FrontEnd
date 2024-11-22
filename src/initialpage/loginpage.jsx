@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,12 +25,13 @@ const Loginpage = (props) => {
   };
 
   const onSubmit = async (data) => {
-    // history.push("/app/main/dashboard");
     dispatch(getLoginData(data));
-    if (login !== null) {
+  };
+  useEffect(() => {
+    if (token) {
       history.push("/app/main/dashboard");
     }
-  };
+  }, [token, history]);
 
   return (
     <div className="account-page">
