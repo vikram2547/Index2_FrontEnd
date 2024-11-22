@@ -1,6 +1,7 @@
 
 import { combineReducers } from "@reduxjs/toolkit";
 import login from "./login";
+import addfilename from "./addfilename";
 // import allemployee from "./allemployee";
 // import adduserSlice from "./adduser";
 // import reportsto from "./reportsto";
@@ -28,6 +29,7 @@ import login from "./login";
 
 const rootReducer = combineReducers({
   login,
+  addfilename,
   // allemployee,
   // reportsto,
   // getprofileinfo,

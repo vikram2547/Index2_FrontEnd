@@ -1,4 +1,3 @@
-
 // import React, { useState } from "react";
 // import { withRouter } from "react-router-dom";
 // import Sidebar from "../../../initialpage/Sidebar/sidebar";
@@ -133,47 +132,47 @@
 //                       </select>
 //                     </div>
 
-                    // {/* Common Fields */}
-                    // {(docType === "Index File" ||
-                    //   docType === "Municipal Town Property Register" ||
-                    //   docType === "Register Of Holdings" ||
-                    //   docType === "Regular Document Register" ||
-                    //   docType === "Loan Order Register" ||
-                    //   docType === "Memo Order Register" ||
-                    //   docType === "Court Order Register") && (
-                    //   <>
-                    //     <div className="form-group">
-                    //       <label>Office Code</label>
-                    //       <input
-                    //         type="text"
-                    //         className="form-control"
-                    //         name="officeCode"
-                    //         value={formData.officeCode}
-                    //         onChange={handleInputChange}
-                    //       />
-                    //     </div>
-                    //     <div className="form-group">
-                    //       <label>Volume No</label>
-                    //       <input
-                    //         type="text"
-                    //         className="form-control"
-                    //         name="volumeNo"
-                    //         value={formData.volumeNo}
-                    //         onChange={handleInputChange}
-                    //       />
-                    //     </div>
-                    //     <div className="form-group">
-                    //       <label>Year</label>
-                    //       <input
-                    //         type="text"
-                    //         className="form-control"
-                    //         name="year"
-                    //         value={formData.year}
-                    //         onChange={handleInputChange}
-                    //       />
-                    //     </div>
-                    //   </>
-                    // )}
+// {/* Common Fields */}
+// {(docType === "Index File" ||
+//   docType === "Municipal Town Property Register" ||
+//   docType === "Register Of Holdings" ||
+//   docType === "Regular Document Register" ||
+//   docType === "Loan Order Register" ||
+//   docType === "Memo Order Register" ||
+//   docType === "Court Order Register") && (
+//   <>
+//     <div className="form-group">
+//       <label>Office Code</label>
+//       <input
+//         type="text"
+//         className="form-control"
+//         name="officeCode"
+//         value={formData.officeCode}
+//         onChange={handleInputChange}
+//       />
+//     </div>
+//     <div className="form-group">
+//       <label>Volume No</label>
+//       <input
+//         type="text"
+//         className="form-control"
+//         name="volumeNo"
+//         value={formData.volumeNo}
+//         onChange={handleInputChange}
+//       />
+//     </div>
+//     <div className="form-group">
+//       <label>Year</label>
+//       <input
+//         type="text"
+//         className="form-control"
+//         name="year"
+//         value={formData.year}
+//         onChange={handleInputChange}
+//       />
+//     </div>
+//   </>
+// )}
 //                     {/* Additional Fields for Specific Types */}
 //                     {(docType === "Regular Document Register" ||
 //                       docType === "Loan Order Register" ||
@@ -225,6 +224,7 @@ import Sidebar from "../../../initialpage/Sidebar/sidebar";
 import Offcanvas from "../../../Entryfile/offcanvance/index.jsx";
 import "../../index.css";
 import DWT from "../../../DynamsoftSDK";
+import { addfilename } from "../../../store/addfilename.js";
 
 const AdminDashboard = () => {
   const [showForm, setShowForm] = useState(false);
@@ -274,8 +274,8 @@ const AdminDashboard = () => {
     );
 
     if (isMatching) {
+      dispatch(addfilename(data));
       alert("Data matches successfully!");
-      // Trigger API call here if needed
     } else {
       alert("Error: Data does not match!");
     }
@@ -295,7 +295,11 @@ const AdminDashboard = () => {
 
   // Function to check if document type is one of the excluded types
   const isExcludedDocumentType = () =>
-    ["Index File", "Municipal Town Property Register", "Register Of Holdings"].includes(docType);
+    [
+      "Index File",
+      "Municipal Town Property Register",
+      "Register Of Holdings",
+    ].includes(docType);
 
   return (
     <>
@@ -462,20 +466,26 @@ const AdminDashboard = () => {
                       <h4>Original Data (Masked)</h4>
                     </div>
                     <div className="card-body">
-                      {Object.entries(formData).map(([key, value]) => (
-                        <div className="form-group" key={key}>
-                          <label>{key}</label>
-                          {/* Conditionally hide Book No and Running No */}
-                          {(key === "bookNo" || key === "runningNo") && isExcludedDocumentType() ? null : (
+                      {Object.entries(formData).map(([key, value]) => {
+                        // Conditionally hide Book No and Running No
+                        if (
+                          (key === "bookNo" || key === "runningNo") &&
+                          isExcludedDocumentType()
+                        ) {
+                          return null;
+                        }
+                        return (
+                          <div className="form-group" key={key}>
+                            <label>{key}</label>
                             <input
                               type="text"
                               className="form-control"
                               value={"*".repeat(value.length)}
                               readOnly
                             />
-                          )}
-                        </div>
-                      ))}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -487,11 +497,17 @@ const AdminDashboard = () => {
                       <h4>Re-Enter Data</h4>
                     </div>
                     <div className="card-body">
-                      {Object.keys(formData).map((key) => (
-                        <div className="form-group" key={key}>
-                          <label>{key}</label>
-                          {/* Conditionally hide Book No and Running No */}
-                          {(key === "bookNo" || key === "runningNo") && isExcludedDocumentType() ? null : (
+                      {Object.keys(formData).map((key) => {
+                        // Conditionally hide Book No and Running No
+                        if (
+                          (key === "bookNo" || key === "runningNo") &&
+                          isExcludedDocumentType()
+                        ) {
+                          return null;
+                        }
+                        return (
+                          <div className="form-group" key={key}>
+                            <label>{key}</label>
                             <input
                               type="text"
                               className="form-control"
@@ -499,18 +515,15 @@ const AdminDashboard = () => {
                               value={compareData[key] || ""}
                               onChange={handleCompareInputChange}
                             />
-                          )}
-                        </div>
-                      ))}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
 
                 <div className="col-md-12 text-center mt-3">
-                  <button
-                    className="btn btn-success mr-3"
-                    onClick={handleSave}
-                  >
+                  <button className="btn btn-success mr-3" onClick={handleSave}>
                     Save
                   </button>
                 </div>

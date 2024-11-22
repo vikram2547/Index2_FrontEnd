@@ -46,7 +46,6 @@ export const getLoginData = (data) => async (dispatch) => {
     });
     if (res?.data) {
       dispatch(postSuccess(res?.data));
-      console.log(res?.data, "aaaaaaaaaaaaaaaaaaaaa");
       
     } else {
       console.error(error);
