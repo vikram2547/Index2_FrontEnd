@@ -225,8 +225,10 @@ import Offcanvas from "../../../Entryfile/offcanvance/index.jsx";
 import "../../index.css";
 import DWT from "../../../DynamsoftSDK";
 import { addfilename } from "../../../store/addfilename.js";
+import { useDispatch } from "react-redux";
 
 const AdminDashboard = () => {
+  const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
