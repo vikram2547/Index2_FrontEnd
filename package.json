@@ -39,14 +39,13 @@
     "@restart/hooks": "^0.4.9",
     "@types/summernote": "^0.8.7",
     "ajv-keywords": "^5.1.0",
-    "antd": "^4.5.2",
+    "antd": "^5.22.2",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "bootstrap-daterangepicker": "^3.1.0",
     "buffer": "^6.0.3",
     "chart.js": "^3.7.0",
     "classnames": "^2.5.1",
-    "cropperjs": "^1.6.2",
     "crypto-browserify": "^3.12.1",
     "dwt": "^18.5.1",
     "faker": "^5.5.3",
@@ -107,7 +106,6 @@
     "text-editor-react": "^1.0.3",
     "theia-sticky-sidebar": "^1.7.0",
     "tiff": "^6.1.1",
-    "tiff.js": "^1.0.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

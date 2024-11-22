@@ -2,7 +2,10 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import login from "./login";
 import addfilename from "./addfilename";
-import uploadServer from "./uploadtoserver";
+import getunprocessedfiles from "./getunprocesedfiles";
+import uploadserver from "./uploadtoserver";
+import getfile from "./getfile";
+import addcropimage from "./addcropimage";
 // import allemployee from "./allemployee";
 // import adduserSlice from "./adduser";
 // import reportsto from "./reportsto";
@@ -31,7 +34,10 @@ import uploadServer from "./uploadtoserver";
 const rootReducer = combineReducers({
   login,
   addfilename,
-  uploadServer,
+  uploadserver,
+  getunprocessedfiles,
+  getfile,
+  addcropimage,
   // allemployee,
   // reportsto,
   // getprofileinfo,

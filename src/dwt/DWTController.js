@@ -2,10 +2,6 @@ import React from 'react';
 import './DWTController.css';
 import ValuePicker from './ValuePicker';
 import RangePicker from './RangePicker';
-import { connect } from 'react-redux';
-import { uploadServer } from '../store/uploadtoserver';
-import { useSelector, useDispatch } from 'react-redux';
-
 /**
  * @props
  * @prop {object} Dynamsoft a namespace
@@ -23,19 +19,8 @@ import { useSelector, useDispatch } from 'react-redux';
  * @prop {function} handleException a function to handle exceptions
  */
 export default class DWTController extends React.Component {
-    
     constructor(props) {
         super(props);
-
-        this.state = {
-            saveFileName: localStorage.getItem('fileName') || 'defaultFileName',
-            saveFileFormat: 'tif',
-            bMulti: false,
-            bWin: true, // assuming Windows OS for this example
-            shownTabs: 0,
-            bUseFileUploader: false,
-          };
-
         if (this.props.features & 7 === 0) {
             //no input tab
             this.initialShownTabs = this.props.features;
@@ -419,9 +404,9 @@ export default class DWTController extends React.Component {
         }, (errorCode, errorString) => this.props.handleException({ code: errorCode, message: errorString }));
     }
     // Tab 4: Save & Upload
-    // handleFileNameChange(event) {
-    //     this.setState({ saveFileName: event.target.value });
-    // }
+    handleFileNameChange(event) {
+        this.setState({ saveFileName: event.target.value });
+    }
     handleSaveConfigChange(event) {
         let format = event.target.value;
         switch (format) {
@@ -440,62 +425,95 @@ export default class DWTController extends React.Component {
     toggleUseUploade(event) {
         this.setState({ bUseFileUploader: event.target.checked });
     }
-    
-
-    componentWillUnmount() {
-        if (window.Dynamsoft && window.Dynamsoft.WebTwainEnv) {
-          try {
-            window.Dynamsoft.WebTwainEnv.Unload(); 
-          } catch (e) {
-            console.error('Error during SDK unload:', e);
-          }
-        }
-      }
-      
-      componentDidMount() {
-        const savedFileName = localStorage.getItem('fileName') || 'No file name available';
-        console.log('Loaded file name from localStorage:', savedFileName);
-        this.setState({ saveFileName: savedFileName });
-        const token = localStorage.getItem('token') || 'No token available';
-        this.setState({ token: token });
-      }
-      
-      handleFileNameChange(e) {
-        const newFileName = e.target.value;
-        this.setState({ saveFileName: newFileName });
-        localStorage.setItem('fileName', newFileName); // Save to localStorage
-        console.log('File name updated in localStorage:', newFileName);
-      }
-
-      
-      saveOrUploadImage = async () => {
-        const fileName = localStorage.getItem('fileName');
-        const token = localStorage.getItem('token');
-    
-        if (!fileName) {
-          this.props.handleOutPutMessage('File name is not available in localStorage.', 'error');
-          return;
-        }
-    
-        if (!token) {
-          this.props.handleOutPutMessage('Token is not available in localStorage.', 'error');
-          return;
-        }
-    
-        const payload = {
-          filename: fileName,
+    saveOrUploadImage(_type) {
+        if (_type !== "local" && _type !== "server") return;
+        let fileName = this.state.saveFileName + "." + this.state.saveFileFormat;
+        let imagesToUpload = [];
+        let fileType = 0;
+        let onSuccess = () => {
+            this.setState({
+                saveFileName: (new Date()).getTime().toString()
+            });
+            _type === "local" ? this.props.handleOutPutMessage(fileName + " saved successfully!", "important") : this.props.handleOutPutMessage(fileName + " uploaded successfully!", "important");
         };
-    
-        // Check if uploadServer is correctly mapped to props
-        if (typeof this.props.uploadServer === 'function') {
-          this.props.uploadServer(token, payload);
+        let onFailure = (errorCode, errorString, httpResponse) => {
+            (httpResponse && httpResponse !== "") ? this.props.handleOutPutMessage(httpResponse, "httpResponse") : this.props.handleException({ code: errorCode, message: errorString });
+        };
+        if (this.state.bMulti) {
+            if (this.props.selected.length === 1 || this.props.selected.length === this.props.buffer.count) {
+                if (_type === "local") {
+                    switch (this.state.saveFileFormat) {
+                        default: break;
+                        case "tif": this.DWTObject.SaveAllAsMultiPageTIFF(fileName, onSuccess, onFailure); break;
+                        case "pdf": this.DWTObject.SaveAllAsPDF(fileName, onSuccess, onFailure); break;
+                    }
+                }
+                else {
+                    for (let i = 0; i < this.props.buffer.count; i++)
+                        imagesToUpload.push(i);
+                }
+            } else {
+                if (_type === "local") {
+                    switch (this.state.saveFileFormat) {
+                        default: break;
+                        case "tif": this.DWTObject.SaveSelectedImagesAsMultiPageTIFF(fileName, onSuccess, onFailure); break;
+                        case "pdf": this.DWTObject.SaveSelectedImagesAsMultiPagePDF(fileName, onSuccess, onFailure); break;
+                    }
+                }
+                else {
+                    imagesToUpload = this.props.selected;
+                }
+            }
         } else {
-          console.error('uploadServer action is not a function');
+            if (_type === "local") {
+                switch (this.state.saveFileFormat) {
+                    default: break;
+                    case "bmp": this.DWTObject.SaveAsBMP(fileName, this.props.buffer.current, onSuccess, onFailure); break;
+                    case "jpg": this.DWTObject.SaveAsJPEG(fileName, this.props.buffer.current, onSuccess, onFailure); break;
+                    case "tif": this.DWTObject.SaveAsTIFF(fileName, this.props.buffer.current, onSuccess, onFailure); break;
+                    case "png": this.DWTObject.SaveAsPNG(fileName, this.props.buffer.current, onSuccess, onFailure); break;
+                    case "pdf": this.DWTObject.SaveAsPDF(fileName, this.props.buffer.current, onSuccess, onFailure); break;
+                }
+            }
+            else {
+                imagesToUpload.push(this.props.buffer.current);
+            }
         }
-      };
-    
-      
+        for (let o in this.Dynamsoft.DWT.EnumDWT_ImageType) {
+            if (o.toLowerCase().indexOf(this.state.saveFileFormat) !== -1 && this.Dynamsoft.DWT.EnumDWT_ImageType[o] < 7) {
+                fileType = this.Dynamsoft.DWT.EnumDWT_ImageType[o];
+                break;
+            }
+        }
+        if (_type === "server") {
+            let protocol = this.Dynamsoft.Lib.detect.ssl ? "https://" : "http://"
+            let _strPort = 2020;//for testing
+            /*window.location.port === "" ? 80 : window.location.port;
+            if (this.Dynamsoft.Lib.detect.ssl === true)
+                _strPort = window.location.port === "" ? 443 : window.location.port;*/
 
+            let strActionPage = "/upload";
+            let serverUrl = protocol + window.location.hostname + ":" + _strPort + strActionPage;
+            if (this.state.bUseFileUploader) {
+                var job = this.fileUploaderManager.CreateJob();
+                job.ServerUrl = serverUrl;
+                job.FileName = fileName;
+                job.ImageType = fileType;
+                this.DWTObject.GenerateURLForUploadData(imagesToUpload, fileType, (resultURL, newIndices, enumImageType) => {
+                    job.SourceValue.Add(resultURL, fileName);
+                    job.OnUploadTransferPercentage = (job, sPercentage) => {
+                        this.props.handleOutPutMessage("Uploading...(" + sPercentage + "%)");
+                    };
+                    job.OnRunSuccess = (job) => { onSuccess() };
+                    job.OnRunFailure = (job, errorCode, errorString) => onFailure(errorCode, errorString);
+                    this.fileUploaderManager.Run(job);
+                }, (errorCode, errorString, strHTTPPostResponseString, newIndices, enumImageType) => {
+                    this.handleException({ code: errorCode, message: errorString });
+                });
+            } else
+                this.DWTObject.HTTPUpload(serverUrl, imagesToUpload, fileType, this.Dynamsoft.DWT.EnumDWT_UploadDataFormat.Binary, fileName, onSuccess, onFailure);
+        }
+    }
     // Tab 5: read Barcode 
     initBarcodeReader(_features) {
         this.DWTObject.Addon.BarcodeReader.getRuntimeSettings()
@@ -627,8 +645,6 @@ export default class DWTController extends React.Component {
         }
     }
     render() {
-        const { saveFileName } = this.state; // Destructure for clarity
-        console.log('Rendering with saveFileName:', saveFileName); // Debug log
         return (
             <div className="DWTController">
                 <div className="divinput">
@@ -678,15 +694,15 @@ export default class DWTController extends React.Component {
                                                         onChange={(e) => this.handleScannerSetupChange(e, "nPixelType")}>
                                                         <option value="0">B&amp;W</option>
                                                         <option value="1">Gray</option>
-                                                        {/* <option value="2">Color</option> */}
+                                                        <option value="2">Color</option>
                                                     </select>
                                                     <select tabIndex="1" style={{ width: "48%" }}
                                                         value={this.state.deviceSetup.nResolution}
                                                         onChange={(e) => this.handleScannerSetupChange(e, "nResolution")}>
-                                                        {/* <option value="100">100 DPI</option> */}
-                                                        {/* <option value="200">200 DPI</option> */}
+                                                        <option value="100">100 DPI</option>
+                                                        <option value="200">200 DPI</option>
                                                         <option value="300">300 DPI</option>
-                                                        {/* <option value="600">600 DPI</option> */}
+                                                        <option value="600">600 DPI</option>
                                                     </select>
                                                 </li>
                                             </ul>
@@ -760,11 +776,11 @@ export default class DWTController extends React.Component {
                                                 <input tabIndex="4" style={{ width: "73%", marginLeft: "2%" }} type="text" size="20" value={this.state.saveFileName} onChange={(e) => this.handleFileNameChange(e)} /></label>
                                         </li>
                                         <li>
-                                            {/* <label><input tabIndex="4" type="radio" value="bmp" name="ImageType" onClick={(e) => this.handleSaveConfigChange(e)} />BMP</label> */}
-                                            {/* <label><input tabIndex="4" type="radio" value="jpg" name="ImageType" defaultChecked onClick={(e) => this.handleSaveConfigChange(e)} />JPEG</label> */}
-                                            <label><input tabIndex="4" type="radio" value="tif" name="ImageType" defaultChecked onClick={(e) => this.handleSaveConfigChange(e)} />TIFF</label>
-                                            {/* <label><input tabIndex="4" type="radio" value="png" name="ImageType" onClick={(e) => this.handleSaveConfigChange(e)} />PNG</label> */}
-                                            {/* <label><input tabIndex="4" type="radio" value="pdf" name="ImageType" onClick={(e) => this.handleSaveConfigChange(e)} />PDF</label> */}
+                                            <label><input tabIndex="4" type="radio" value="bmp" name="ImageType" onClick={(e) => this.handleSaveConfigChange(e)} />BMP</label>
+                                            <label><input tabIndex="4" type="radio" value="jpg" name="ImageType" defaultChecked onClick={(e) => this.handleSaveConfigChange(e)} />JPEG</label>
+                                            <label><input tabIndex="4" type="radio" value="tif" name="ImageType" onClick={(e) => this.handleSaveConfigChange(e)} />TIFF</label>
+                                            <label><input tabIndex="4" type="radio" value="png" name="ImageType" onClick={(e) => this.handleSaveConfigChange(e)} />PNG</label>
+                                            <label><input tabIndex="4" type="radio" value="pdf" name="ImageType" onClick={(e) => this.handleSaveConfigChange(e)} />PDF</label>
                                         </li>
                                         <li>
                                             <label><input tabIndex="4" type="checkbox"
@@ -777,7 +793,7 @@ export default class DWTController extends React.Component {
                                         </li>
                                         <li className="tc">
                                             {(this.state.bWin && (this.props.features & 0b1000)) ? <button tabIndex="4" className={this.props.buffer.count === 0 ? "majorButton disabled width_48p" : "majorButton enabled width_48p"} disabled={this.props.buffer.count === 0 ? "disabled" : ""} onClick={() => this.saveOrUploadImage('local')} >Save to Local</button> : ""}
-                                            {<button tabIndex="4" onClick={() => this.saveOrUploadImage()} >Upload to Server</button>}
+                                            {(this.props.features & 0b10000) ? <button tabIndex="4" className={this.props.buffer.count === 0 ? "majorButton disabled width_48p marginL_2p" : "majorButton enabled width_4p marginL_2p"} disabled={this.props.buffer.count === 0 ? "disabled" : ""} onClick={() => this.saveOrUploadImage('server')} >Upload to Server</button> : ""}
                                         </li>
                                     </ul>
                                 </div>
