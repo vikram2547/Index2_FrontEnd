@@ -7,14 +7,15 @@ import Sidebar from "../../../initialpage/Sidebar/sidebar";
 import Offcanvas from "../../../Entryfile/offcanvance";
 import { useDispatch, useSelector } from "react-redux";
 import { getProcessedFile } from "../../../store/getprocessedfile";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const Processedfiles = () => {
   const [menu, setMenu] = useState(false);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const token = useSelector((state) => state.login.token);
   const data = useSelector((state) => state.getprocessedfile.getprocessedfile) || [];
-  console.log(data, "data");
   
   const toggleMobileMenu = () => {
     setMenu(!menu);
@@ -38,54 +39,28 @@ const Processedfiles = () => {
     },
 
     {
-      title: "Processed By",
-      dataIndex: "processed_by",
-      render: (text, record) => record.processed_by, // Render processed_by field
-    },
-
-    {
-      title: "File Path",
-      dataIndex: "file",
-      render: (text, record) => record.file, // Render file path
-    },
-
-    {
-      title: "Processed At",
-      dataIndex: "processed_at",
-      render: (text, record) => new Date(record.processed_at).toLocaleString(), // Render date in a readable format
-    },
-
-    {
-      title: "QC Check",
-      dataIndex: "qc_check",
-      render: (text, record) => (record.qc_check ? "Passed" : "Failed"), // Render QC check status
-    },
-
-    {
       title: "Action",
-      render: (record) => (
-        <div className="action-icons text-end">
-          <button
-            onClick={() => handleApprove(record)}
-            className="btn btn-success action-icon"
-          >
-            Approve
-          </button>
-        </div>
+      render: (_, record) => (
+        <i
+          className="fa fa-eye action-icon"
+          style={{ cursor: "pointer", color: "#1890ff" }}
+          onClick={() => handleEyeIconClick(record.id)} 
+        />
       ),
-    }
+    },
   ];
+
+  const handleEyeIconClick = (id) => {
+    localStorage.setItem("PdfFileId", id);
+
+    history.push("/app/main/image-approve-reject");
+  };
 
   useEffect(() => {
     if (token) {
       dispatch(getProcessedFile(token));
     }
   }, [dispatch, token]);
-
-  const handleApprove = (record) => {
-    // Handle approve action
-    console.log("Approving record:", record);
-  };
   
   return (
     <>

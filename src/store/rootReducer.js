@@ -8,6 +8,8 @@ import getfile from "./getfile";
 import addcropimage from "./addcropimage";
 import getprocessedfile from "./getprocessedfile";
 import getqccheckedfiles from "./getqccheckedfiles";
+import reject from "./reject";
+import approve from "./approve";
 
 // import allemployee from "./allemployee";
 // import adduserSlice from "./adduser";
@@ -43,6 +45,8 @@ const rootReducer = combineReducers({
   addcropimage,
   getprocessedfile,
   getqccheckedfiles,
+  approve,
+  reject,
   // allemployee,
   // reportsto,
   // getprofileinfo,

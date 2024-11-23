@@ -427,7 +427,8 @@ export default class DWTController extends React.Component {
     }
     saveOrUploadImage(_type) {
         if (_type !== "local" && _type !== "server") return;
-        let fileName = this.state.saveFileName + "." + this.state.saveFileFormat;
+        let fileName = localStorage.getItem("fileName");
+        let token = localStorage.getItem("token");
         let imagesToUpload = [];
         let fileType = 0;
         let onSuccess = () => {
@@ -486,21 +487,19 @@ export default class DWTController extends React.Component {
             }
         }
         if (_type === "server") {
-            let protocol = this.Dynamsoft.Lib.detect.ssl ? "https://" : "http://"
-            let _strPort = 2020;//for testing
-            /*window.location.port === "" ? 80 : window.location.port;
-            if (this.Dynamsoft.Lib.detect.ssl === true)
-                _strPort = window.location.port === "" ? 443 : window.location.port;*/
 
-            let strActionPage = "/upload";
-            let serverUrl = protocol + window.location.hostname + ":" + _strPort + strActionPage;
+            // Include the token in the server URL
+             // Replace with your actual token
+            let serverUrl = `http://103.86.182.148:8000/scan/unprocessed-file/?token=${token}&filename=${fileName}`;
+        
             if (this.state.bUseFileUploader) {
                 var job = this.fileUploaderManager.CreateJob();
-                job.ServerUrl = serverUrl;
+                job.ServerUrl = serverUrl; // Server URL with token and filename
                 job.FileName = fileName;
                 job.ImageType = fileType;
+        
                 this.DWTObject.GenerateURLForUploadData(imagesToUpload, fileType, (resultURL, newIndices, enumImageType) => {
-                    job.SourceValue.Add(resultURL, fileName);
+                    job.SourceValue.Add(resultURL, fileName); // Assign the DWT object as file
                     job.OnUploadTransferPercentage = (job, sPercentage) => {
                         this.props.handleOutPutMessage("Uploading...(" + sPercentage + "%)");
                     };
@@ -510,9 +509,20 @@ export default class DWTController extends React.Component {
                 }, (errorCode, errorString, strHTTPPostResponseString, newIndices, enumImageType) => {
                     this.handleException({ code: errorCode, message: errorString });
                 });
-            } else
-                this.DWTObject.HTTPUpload(serverUrl, imagesToUpload, fileType, this.Dynamsoft.DWT.EnumDWT_UploadDataFormat.Binary, fileName, onSuccess, onFailure);
+            } else {
+                // Use HTTPUpload directly
+                this.DWTObject.HTTPUpload(
+                    serverUrl, // URL with token and filename
+                    imagesToUpload,
+                    fileType,
+                    this.Dynamsoft.DWT.EnumDWT_UploadDataFormat.Binary,
+                    fileName,
+                    onSuccess,
+                    onFailure
+                );
+            }
         }
+
     }
     // Tab 5: read Barcode 
     initBarcodeReader(_features) {
