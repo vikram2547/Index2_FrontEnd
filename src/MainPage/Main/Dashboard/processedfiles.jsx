@@ -13,14 +13,12 @@ const Processedfiles = () => {
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.login.token);
-  const data =
-  useSelector((state) => state.getprocessedfile.getprocessedfile) || [];
-  console.log(data,"data");
+  const data = useSelector((state) => state.getprocessedfile.getprocessedfile) || [];
+  console.log(data, "data");
   
   const toggleMobileMenu = () => {
     setMenu(!menu);
   };
- 
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -34,8 +32,33 @@ const Processedfiles = () => {
   const columns = [
     {
       title: "File Name",
-      dataIndex: "name",
-      sorter: (a, b) => a.name.length - b.name.length,
+      dataIndex: "filename", // Adjust to match the response structure
+      render: (text, record) => record.filename.filename, // Access the filename nested property
+      sorter: (a, b) => a.filename.filename.length - b.filename.filename.length,
+    },
+
+    {
+      title: "Processed By",
+      dataIndex: "processed_by",
+      render: (text, record) => record.processed_by, // Render processed_by field
+    },
+
+    {
+      title: "File Path",
+      dataIndex: "file",
+      render: (text, record) => record.file, // Render file path
+    },
+
+    {
+      title: "Processed At",
+      dataIndex: "processed_at",
+      render: (text, record) => new Date(record.processed_at).toLocaleString(), // Render date in a readable format
+    },
+
+    {
+      title: "QC Check",
+      dataIndex: "qc_check",
+      render: (text, record) => (record.qc_check ? "Passed" : "Failed"), // Render QC check status
     },
 
     {
@@ -51,7 +74,6 @@ const Processedfiles = () => {
         </div>
       ),
     }
-    
   ];
 
   useEffect(() => {
@@ -61,9 +83,9 @@ const Processedfiles = () => {
   }, [dispatch, token]);
 
   const handleApprove = (record) => {
-    
+    // Handle approve action
+    console.log("Approving record:", record);
   };
-  
   
   return (
     <>
@@ -71,7 +93,6 @@ const Processedfiles = () => {
         <Header onMenuClick={() => toggleMobileMenu()} />
         <Sidebar />
         <div className="page-wrapper">
-          
           {/* Page Content */}
           <div className="content container-fluid">
             {/* Page Header */}
@@ -83,9 +104,7 @@ const Processedfiles = () => {
                     <li className="breadcrumb-item">
                       <Link to="/app/main/dashboard">Dashboard</Link>
                     </li>
-                    <li className="breadcrumb-item active">
-                      Processed Files
-                    </li>
+                    <li className="breadcrumb-item active">Processed Files</li>
                   </ul>
                 </div>
               </div>
@@ -99,8 +118,7 @@ const Processedfiles = () => {
                     className="table-striped"
                     pagination={{
                       total: data.length,
-                      showTotal: (total, range) =>
-                        `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+                      showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                       showSizeChanger: true,
                       onShowSizeChange: onShowSizeChange,
                       itemRender: itemRender,
@@ -108,7 +126,7 @@ const Processedfiles = () => {
                     style={{ overflowX: "auto" }}
                     columns={columns}
                     bordered
-                    dataSource={data}
+                    dataSource={Array.isArray(data) ? data : []}
                   />
                 </div>
               </div>

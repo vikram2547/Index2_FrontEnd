@@ -32,8 +32,13 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
   
       const imageUrl = URL.createObjectURL(response.data);
       setImageUrl(imageUrl);
+  
+      // Assuming the response contains the total number of pages
+      const totalPages = response.data.totalPages; // Adjust based on your API response structure
+      setTotalPages(totalPages);
+  
     } catch (err) {
-      if (err.response && err.response.status === 400) {
+      if (err.response && err.response.data && err.response.data.error) {
         const errorMessage = err.response.data.error;
         console.error("Error fetching image:", errorMessage);
   
@@ -48,8 +53,13 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
   
 
   const initializeCropper = () => {
+    // Ensure any existing cropper is destroyed before initializing a new one
+    if (cropper) {
+      cropper.destroy();
+    }
+
     const imageElement = imageRef.current;
-    if (imageElement && !cropper) {
+    if (imageElement) {
       const newCropper = new Cropper(imageElement, {
         aspectRatio: NaN,
         viewMode: 2,
@@ -75,9 +85,15 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
       } else {
         console.error("Cropped canvas could not be generated.");
       }
-      onPageChange?.(page_number + 1);
-      SetPagenumber(page_number + 1);
-      fetchImage();
+        const totalPages = 10; 
+  
+      if (page_number >= totalPages) {
+        alert("This is the last page.");
+      } else {
+        onPageChange?.(page_number + 1);
+        SetPagenumber(page_number + 1);
+        fetchImage(page_number + 1);
+      }
     } else {
       console.error("Cropper is not initialized.");
     }
@@ -115,11 +131,13 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
   };
 
   useEffect(() => {
-    fetchImage();
+    fetchImage(pageNumber);
   }, [fileId, pageNumber]);
 
   useEffect(() => {
-    if (imageUrl) initializeCropper();
+    if (imageUrl) {
+      initializeCropper();
+    }
     return () => cropper?.destroy();
   }, [imageUrl]);
 

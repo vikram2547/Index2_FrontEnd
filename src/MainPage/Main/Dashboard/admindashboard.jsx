@@ -36,14 +36,13 @@ const AdminDashboard = () => {
   const token = useSelector((state) => state.login.token);
   const officeCode = useSelector((state) => state.login.office_code);
   const FileNameSelector = useSelector((state) => state.addfilename.filename);
+
   useEffect(() => {
-    // Check if fileName is already stored in localStorage
-    const storedFileName = localStorage.getItem("fileName");
-    if (storedFileName) {
-      setFileName(storedFileName);
-    } else if (FileNameSelector) {
+    if (FileNameSelector) {
       setFileName(FileNameSelector);
-      localStorage.setItem("fileName", FileNameSelector); // Save to localStorage
+      localStorage.setItem("fileName", FileNameSelector);
+      setShowForm(false);
+      setShowComparison(false);
     }
   }, [FileNameSelector]);
 
