@@ -17,7 +17,7 @@ function ApproveReject() {
   const rejectResponse = useSelector((state) => state.reject.reject); // Get response from Reject action
 
   useEffect(() => {
-    const storedpdfFileId = localStorage.getItem("PdfFileId");
+    const storedpdfFileId = localStorage.getItem("PdfFile");
     if (storedpdfFileId) {
       const fullFileUrl = `${API_HOST}scan/serve_tiff_as_pdf/${storedpdfFileId}/`;
       setPdfSrc(fullFileUrl); // Set the PDF URL
@@ -25,32 +25,34 @@ function ApproveReject() {
   }, []);
 
   const dispatchApproveAction = () => {
-    const storedpdfFileId = localStorage.getItem("PdfFileId");
+    const storedpdfFileId = localStorage.getItem("PdfFile");
     if (storedpdfFileId) {
       dispatch(Approve(token, storedpdfFileId)); // Dispatch the Approve action
+      history.push("/app/main/processed-files");
     }
   };
 
   const dispatchRejectAction = () => {
-    const storedpdfFileId = localStorage.getItem("PdfFileId");
+    const storedpdfFileId = localStorage.getItem("PdfFile");
     if (storedpdfFileId) {
       dispatch(Reject(token, storedpdfFileId)); // Dispatch the Reject action
+      history.push("/app/main/processed-files");
     }
   };
 
-  useEffect(() => {
-    if (approveResponse?.message) {
-      alert("File Approved."); // Show success alert
-      history.push("/app/main/processed-files"); // Navigate to processed files
-    }
-  }, [approveResponse]);
+  // useEffect(() => {
+  //   if (approveResponse?.message) {
+  //     // alert("File Approved."); // Show success alert
+  //     history.push("/app/main/processed-files"); // Navigate to processed files
+  //   }
+  // }, [approveResponse]);
 
-  useEffect(() => {
-    if (rejectResponse?.message) {
-      alert("File Rejected."); // Show success alert
-      history.push("/app/main/processed-files"); // Navigate to processed files
-    }
-  }, [rejectResponse]);
+  // useEffect(() => {
+  //   if (rejectResponse?.message) {
+  //     // alert("File Rejected."); // Show success alert
+  //     history.push("/app/main/processed-files"); // Navigate to processed files
+  //   }
+  // }, [rejectResponse]);
 
   return (
     <div>

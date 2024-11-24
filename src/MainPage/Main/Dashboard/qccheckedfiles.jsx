@@ -6,7 +6,6 @@ import Header from "../../../initialpage/Sidebar/header";
 import Sidebar from "../../../initialpage/Sidebar/sidebar";
 import Offcanvas from "../../../Entryfile/offcanvance";
 import { useDispatch, useSelector } from "react-redux";
-import { getProcessedFile } from "../../../store/getprocessedfile";
 import { getQcCheckedFile } from "../../../store/getqccheckedfiles";
 
 const QcCheckedFiles = () => {
@@ -16,12 +15,22 @@ const QcCheckedFiles = () => {
   const token = useSelector((state) => state.login.token);
   const data =
     useSelector((state) => state.getprocessedfile.getprocessedfile) || [];
-  console.log(data, "data");
 
   const toggleMobileMenu = () => {
     setMenu(!menu);
   };
 
+  const handleDownload = (record) => {
+    const fileUrl = `${API_HOST}path/to/download/${record.id}`; // Construct the download URL based on the record
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.download = record.fileName || "file.pdf"; // Provide a default name if not available in record
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  
   useEffect(() => {
     if ($(".select").length > 0) {
       $(".select").select2({
@@ -34,8 +43,8 @@ const QcCheckedFiles = () => {
   const columns = [
     {
       title: "File Name",
-      dataIndex: "name",
-      sorter: (a, b) => a.name.length - b.name.length,
+      dataIndex: "filename",
+      sorter: (a, b) => a.filename.length - b.filename.length,
     },
 
     {
@@ -43,14 +52,15 @@ const QcCheckedFiles = () => {
       render: (record) => (
         <div className="action-icons text-end">
           <button
-            onClick={() => handleView(record)} // Replace handleApprove with handleView
-            className="btn btn-info action-icon"
+            onClick={() => handleDownload(record)} // Trigger download on click
+            className="btn btn-primary action-icon"
           >
-            View
+            Download
           </button>
         </div>
       ),
-    },
+    }
+    
   ];
 
   useEffect(() => {
@@ -101,8 +111,7 @@ const QcCheckedFiles = () => {
                     style={{ overflowX: "auto" }}
                     columns={columns}
                     bordered
-                    dataSource={data}
-                  />
+                    dataSource={Array.isArray(data) ? data : []}                  />
                 </div>
               </div>
             </div>

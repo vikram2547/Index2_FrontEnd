@@ -51,8 +51,7 @@ const Processedfiles = () => {
   ];
 
   const handleEyeIconClick = (id) => {
-    localStorage.setItem("PdfFileId", id);
-
+    localStorage.setItem("PdfFile", id);
     history.push("/app/main/image-approve-reject");
   };
 
