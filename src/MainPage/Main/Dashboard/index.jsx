@@ -7,7 +7,8 @@ import unprocessedfiles from './unprocessedfiles';
 import ImageViewerWithCropper from './ImageViewer';
 import QcCheckedFiles from './qccheckedfiles';
 import ApproveReject from './approvereject';
-// import Employeedashboard from './employeedashboard';
+import UserProcessedfiles from './userprocessedfiles';
+import UserApproveReject from './userapprovereject';
 
 const DashboardRoute = ({ match }) => (
    <Switch>
@@ -18,10 +19,9 @@ const DashboardRoute = ({ match }) => (
       <Route path={`${match.url}/image-viewer`} component={ImageViewerWithCropper} />
       <Route path={`${match.url}/qcchecked-files`} component={QcCheckedFiles} />
       <Route path={`${match.url}/image-approve-reject`} component={ApproveReject} />
+      <Route path={`${match.url}/user-processed-files`} component={UserProcessedfiles} />
+      <Route path={`${match.url}/user-approve-reject`} component={UserApproveReject} />
 
-
-
-      {/* <Route path={`${match.url}/employee-dashboard`} component={Employeedashboard} /> */}
    </Switch>
 
 );

@@ -4,6 +4,8 @@ import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.min.css";
 import { useSelector } from "react-redux";
 import { API_HOST } from "../../../base_URL/http";
+import { message } from "antd";
+
 
 const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -33,8 +35,7 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
       const imageUrl = URL.createObjectURL(response.data);
       setImageUrl(imageUrl);
   
-      // Assuming the response contains the total number of pages
-      const totalPages = response.data.totalPages; // Adjust based on your API response structure
+      const totalPages = response.data.totalPages; 
       setTotalPages(totalPages);
   
     } catch (err) {
@@ -43,7 +44,7 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
         console.error("Error fetching image:", errorMessage);
   
         if (errorMessage.includes("Page number out of range")) {
-          alert(errorMessage);
+          message.success("File Rejected.", 3);
         }
       } else {
         console.error("Unexpected error:", err);

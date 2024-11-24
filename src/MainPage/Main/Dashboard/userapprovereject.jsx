@@ -9,7 +9,8 @@ import { Reject } from "../../../store/reject";
 import { useDispatch, useSelector } from "react-redux";
 import { message } from "antd";
 
-function ApproveReject() {
+
+function UserApproveReject() {
   const [pdfSrc, setPdfSrc] = useState(""); // Store PDF file URL
   const dispatch = useDispatch();
   const history = useHistory();
@@ -41,14 +42,14 @@ function ApproveReject() {
 
   useEffect(() => {
     if (approveResponse?.message) {
-      message.success("File Approved.", 3);
+        message.success("File Approved.", 3);
       history.push("/app/main/processed-files"); // Navigate to processed files
     }
   }, [approveResponse]);
 
   useEffect(() => {
     if (rejectResponse?.message) {
-      message.success("File Rejected.", 3);
+        message.success("File Rejected.", 3);
       history.push("/app/main/processed-files"); // Navigate to processed files
     }
   }, [rejectResponse]);
@@ -118,4 +119,4 @@ function ApproveReject() {
   );
 }
 
-export default ApproveReject;
+export default UserApproveReject;

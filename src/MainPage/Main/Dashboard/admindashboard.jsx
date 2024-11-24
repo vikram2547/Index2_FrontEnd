@@ -6,6 +6,8 @@ import "../../index.css";
 import DWT from "../../../DynamsoftSDK";
 import { useDispatch, useSelector } from "react-redux";
 import { addFileName } from "../../../store/addfilename";
+import { message } from "antd";
+
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -60,7 +62,7 @@ const AdminDashboard = () => {
     localStorage.setItem("formData", JSON.stringify(dataWithOfficeCode));
     setShowComparison(true);
     setShowForm(false);
-    alert("File name generated and data saved successfully!");
+    message.success("File name generated and data saved successfully!", 3);
   };
 
   const handleSave = () => {
@@ -100,7 +102,7 @@ const AdminDashboard = () => {
     const mapping = documentTypeMapping[docType];
 
     if (!mapping) {
-      alert("Error: Invalid document type!");
+      message.error("Error: Invalid document type!", 3);
       return;
     }
 
@@ -122,9 +124,9 @@ const AdminDashboard = () => {
 
     if (isMatching) {
       dispatch(addFileName(token, payload));
-      alert("Data matches successfully!");
+      message.success("Data matches successfully!", 3);
     } else {
-      alert("Error: Data does not match!");
+      message.error("Error: Data does not match!", 3);
     }
   };
 
