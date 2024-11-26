@@ -1,5 +1,5 @@
 
-export const API_HOST = "http://103.86.182.148:8000/"; // newdev
+export const API_HOST = "http://184.168.125.222:8000/"; // newdev
 
 export const defaultHeaders = {
   "Content-Type": "application/json",
