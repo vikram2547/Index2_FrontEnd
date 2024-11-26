@@ -135,14 +135,14 @@ import { Approve } from "../../../store/approve";
 import { Reject } from "../../../store/reject";
 import { useDispatch, useSelector } from "react-redux";
 
-function ApproveReject() {
+function QcApproveReject() {
   const [pdfSrc, setPdfSrc] = useState(""); // Store PDF file URL
   const dispatch = useDispatch();
   const history = useHistory();
   const token = useSelector((state) => state.login.token); // Retrieve token from Redux store
 
   useEffect(() => {
-    const storedPdfFileId = localStorage.getItem("FileId");
+    const storedPdfFileId = localStorage.getItem("QcFileId");
     if (storedPdfFileId) {
       const fullFileUrl = `${API_HOST}scan/serve_tiff_as_pdf/${storedPdfFileId}/`;
       setPdfSrc(fullFileUrl); // Set the PDF URL
@@ -150,7 +150,7 @@ function ApproveReject() {
   }, []);
 
   const dispatchApproveAction = () => {
-    const storedPdfFileId = localStorage.getItem("FileId");
+    const storedPdfFileId = localStorage.getItem("QcFileId");
     if (storedPdfFileId) {
       dispatch(Approve(token, storedPdfFileId)); // Dispatch the Approve action
       history.push("/app/main/processed-files");
@@ -158,7 +158,7 @@ function ApproveReject() {
   };
 
   const dispatchRejectAction = () => {
-    const storedPdfFileId = localStorage.getItem("FileId");
+    const storedPdfFileId = localStorage.getItem("QcFileId");
     if (storedPdfFileId) {
       dispatch(Reject(token, storedPdfFileId)); // Dispatch the Reject action
       history.push("/app/main/processed-files");
@@ -231,4 +231,4 @@ function ApproveReject() {
   );
 }
 
-export default ApproveReject;
+export default QcApproveReject;

@@ -58,10 +58,9 @@ const QcCheckedFiles = () => {
   }, [dispatch, token]);
 
   const handleEyeIconClick = (id) => {
-    localStorage.setItem("PdfFileId", id);
-    history.push("/app/main/image-approve-reject");
+    localStorage.setItem("QcFileId", id);
+    history.push("/app/main/qc-approve-reject");
   };
-
 
 
   return (

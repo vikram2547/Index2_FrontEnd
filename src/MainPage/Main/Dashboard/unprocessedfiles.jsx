@@ -13,8 +13,6 @@ const Unprocessedfiles = () => {
   const data =
     useSelector((state) => state.getunprocessedfiles.getunprocessedfiles) || [];
 
-  console.log(data, "datadata");
-
   const columns = [
     {
       title: "File Name",

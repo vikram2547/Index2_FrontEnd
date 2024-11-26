@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_HOST, GET_API } from "../base_URL/http";
+import { API_HOST, GET_API, POST_API } from "../base_URL/http";
 import revertAll from "./action";
 
 const initialState = {
@@ -31,7 +31,7 @@ export const Approve = (token, storedpdfFileId) => async (dispatch) => {
   
     try {
       const res = await axios({
-        method: GET_API,
+        method: POST_API,
         url: `${API_HOST}scan/approve_file/${storedpdfFileId}/`,
         headers: localHeader,
       });

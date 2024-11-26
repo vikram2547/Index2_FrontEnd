@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { addFileName } from "../../../store/addfilename";
 import { message } from "antd";
 
-
 const AdminDashboard = () => {
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -36,7 +35,7 @@ const AdminDashboard = () => {
   ];
 
   const token = useSelector((state) => state.login.token);
-  const officeCode = useSelector((state) => state.login.office_code);
+  const officeCode = useSelector((state) => state.login.loginData?.office_code);
   const FileNameSelector = useSelector((state) => state.addfilename.filename);
 
   useEffect(() => {
@@ -275,7 +274,7 @@ const AdminDashboard = () => {
                           <input
                             type="text"
                             className="form-control"
-                            value={officeCode}
+                            value={officeCode || "No office code available"}
                             readOnly
                           />
                         </div>

@@ -12,6 +12,7 @@ import UserApproveReject from './userapprovereject';
 import EmployeeDashboard from './employeedashboard';
 import Loginpage from '../../../initialpage/loginpage';
 import UserQcCheckedFiles from './userqccheckedfiles';
+import QcApproveReject from './qcapprovereject';
 
 const DashboardRoute = ({ match }) => (
    <Switch>
@@ -27,6 +28,8 @@ const DashboardRoute = ({ match }) => (
       <Route path={`${match.url}/user-processed-files`} component={UserProcessedfiles} />
       <Route path={`${match.url}/user-approve-reject`} component={UserApproveReject} />
       <Route path={`${match.url}/userqcchecked-files`} component={UserQcCheckedFiles} />
+      <Route path={`${match.url}/qc-approve-reject`} component={QcApproveReject} />
+
 
 
    </Switch>

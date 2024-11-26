@@ -7,10 +7,12 @@ import Sidebar from "../../../initialpage/Sidebar/sidebar";
 import Offcanvas from "../../../Entryfile/offcanvance";
 import { useDispatch, useSelector } from "react-redux";
 import { getQcCheckedFile } from "../../../store/getqccheckedfiles";
+import { useHistory } from "react-router-dom";
 
 const UserQcCheckedFiles = () => {
   const [menu, setMenu] = useState(false);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const token = useSelector((state) => state.login.token);
   const data =
