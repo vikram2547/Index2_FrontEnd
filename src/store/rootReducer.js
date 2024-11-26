@@ -10,6 +10,8 @@ import getprocessedfile from "./getprocessedfile";
 import getqccheckedfiles from "./getqccheckedfiles";
 import reject from "./reject";
 import approve from "./approve";
+import userapprove from "./userapprove";
+import userreject from "./userreject";
 
 // import allemployee from "./allemployee";
 // import adduserSlice from "./adduser";
@@ -47,6 +49,8 @@ const rootReducer = combineReducers({
   getqccheckedfiles,
   approve,
   reject,
+  userapprove,
+  userreject,
   // allemployee,
   // reportsto,
   // getprofileinfo,

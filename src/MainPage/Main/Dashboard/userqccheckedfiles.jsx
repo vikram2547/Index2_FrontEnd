@@ -7,16 +7,14 @@ import Sidebar from "../../../initialpage/Sidebar/sidebar";
 import Offcanvas from "../../../Entryfile/offcanvance";
 import { useDispatch, useSelector } from "react-redux";
 import { getQcCheckedFile } from "../../../store/getqccheckedfiles";
-import { useHistory } from "react-router-dom";
 
-const QcCheckedFiles = () => {
+const UserQcCheckedFiles = () => {
   const [menu, setMenu] = useState(false);
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const token = useSelector((state) => state.login.token);
   const data =
-    useSelector((state) => state.getprocessedfile.getprocessedfile) || [];
+    useSelector((state) => state.getqccheckedfiles.getqccheckedfiles) || [];
 
   const toggleMobileMenu = () => {
     setMenu(!menu);
@@ -57,11 +55,11 @@ const QcCheckedFiles = () => {
     }
   }, [dispatch, token]);
 
-  const handleEyeIconClick = (id) => {
-    localStorage.setItem("PdfFileId", id);
-    history.push("/app/main/image-approve-reject");
-  };
+ const handleEyeIconClick = (id) => {
+    localStorage.setItem("UserPdfFileId", id);
 
+    history.push("/app/main/user-approve-reject");
+  };
 
 
   return (
@@ -104,7 +102,7 @@ const QcCheckedFiles = () => {
                     style={{ overflowX: "auto" }}
                     columns={columns}
                     bordered
-                    dataSource={data}
+                    dataSource={Array.isArray(data) ? data : []}
                   />
                 </div>
               </div>
@@ -117,4 +115,4 @@ const QcCheckedFiles = () => {
   );
 };
 
-export default QcCheckedFiles;
+export default UserQcCheckedFiles;

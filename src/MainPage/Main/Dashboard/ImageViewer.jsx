@@ -5,16 +5,17 @@ import "cropperjs/dist/cropper.min.css";
 import { useSelector } from "react-redux";
 import { API_HOST } from "../../../base_URL/http";
 import { message } from "antd";
-
+import { useHistory } from "react-router-dom";
 
 const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [cropper, setCropper] = useState(null);
-  const [croppedImages, setCroppedImages] = useState([]);
   const imageRef = useRef(null);
   const token = useSelector((state) => state.login.token);
   const [page_number, SetPagenumber] = useState(1);
+  const history = useHistory();
 
+ 
   const fetchImage = async (page) => {
     try {
       const storedFileId = localStorage.getItem("selectedFileId");
@@ -22,7 +23,13 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
         console.error("File ID is not found in local storage.");
         return;
       }
-  
+
+      setImageUrl(null);
+      if (cropper) {
+        cropper.destroy();
+        setCropper(null);
+      }
+
       const response = await axios.get(
         `${API_HOST}/scan/file-process/${storedFileId}/`,
         {
@@ -31,30 +38,33 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
           responseType: "blob",
         }
       );
-  
-      const imageUrl = URL.createObjectURL(response.data);
-      setImageUrl(imageUrl);
-  
-      const totalPages = response.data.totalPages; 
-      setTotalPages(totalPages);
-  
+
+      const newImageUrl = URL.createObjectURL(response.data);
+      setImageUrl(newImageUrl);
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.error) {
+      console.error("Error fetching image:", err.response?.data || err.message);
+
+      if (err.response?.data?.error) {
         const errorMessage = err.response.data.error;
-        console.error("Error fetching image:", errorMessage);
-  
+
         if (errorMessage.includes("Page number out of range")) {
-          message.success("File Rejected.", 3);
+          message.destroy();
+          message.warning("This is the last page.", 3);
+          history.push("/app/main/unprocessed-files");
+        } else {
+          message.destroy();
+          message.error(errorMessage || "This is the last page.", 3);
+          history.push("/app/main/unprocessed-files");
         }
       } else {
-        console.error("Unexpected error:", err);
+        message.destroy();
+        message.error("This is the last page.", 3);
+        history.push("/app/main/unprocessed-files");
       }
     }
   };
-  
 
   const initializeCropper = () => {
-    // Ensure any existing cropper is destroyed before initializing a new one
     if (cropper) {
       cropper.destroy();
     }
@@ -78,28 +88,9 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
   const rotateRight = () => cropper?.rotate(45);
 
   const handleNextPage = () => {
-    if (cropper) {
-      const croppedCanvas = cropper.getCroppedCanvas();
-      if (croppedCanvas) {
-        const croppedImageUrl = croppedCanvas.toDataURL();
-        setCroppedImages((prev) => [...prev, croppedImageUrl]);
-      } else {
-        console.error("Cropped canvas could not be generated.");
-      }
-        const totalPages = 10; 
-  
-      if (page_number >= totalPages) {
-        alert("This is the last page.");
-      } else {
-        onPageChange?.(page_number + 1);
-        SetPagenumber(page_number + 1);
-        fetchImage(page_number + 1);
-      }
-    } else {
-      console.error("Cropper is not initialized.");
-    }
+    SetPagenumber((prev) => prev + 1);
+    fetchImage(page_number + 1);
   };
-  
 
   const handleCropAndUpload = async () => {
     if (cropper) {
@@ -115,7 +106,7 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
 
       try {
         const response = await axios.post(
-            `${API_HOST}/scan/upload-cropped-image/`,
+          `${API_HOST}/scan/upload-cropped-image/`,
           formData,
           {
             headers: {
@@ -139,7 +130,13 @@ const ImageViewerWithCropper = ({ fileId, pageNumber, onPageChange }) => {
     if (imageUrl) {
       initializeCropper();
     }
-    return () => cropper?.destroy();
+
+    // Clean up the previous cropper instance and image URL on unmount
+    return () => {
+      if (cropper) cropper.destroy();
+      if (imageUrl) URL.revokeObjectURL(imageUrl);
+      setCropper(null);
+    };
   }, [imageUrl]);
 
   return (

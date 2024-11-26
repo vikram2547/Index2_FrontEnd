@@ -4,28 +4,27 @@ import { API_HOST, GET_API } from "../base_URL/http";
 import revertAll from "./action";
 
 const initialState = {
-    reject: null,
+    userapprove: null,
 };
 
-export const reject = createSlice({
-  name: "reject",
+export const userapprove = createSlice({
+  name: "userapprove",
   initialState,
   reducers: {
   
     postSuccess: (state, action) => {
-      state.reject = action.payload;
+      state.userapprove = action.payload;
     },
-
-    ResetRejectedState(state) {
+    
+    ResetApproveState(state) {
       state.approve = null; 
   },
-   
   },
  
 });
 
 // Get profile information data
-export const Reject = (token,storedpdfFileId) => async (dispatch) => {
+export const UserApprove = (token, storedpdfFileId) => async (dispatch) => {
     const localHeader = {
       Authorization: `Token ${token}`,
     };
@@ -33,7 +32,7 @@ export const Reject = (token,storedpdfFileId) => async (dispatch) => {
     try {
       const res = await axios({
         method: GET_API,
-        url: `${API_HOST}scan/reject_file/${storedpdfFileId}/`,
+        url: `${API_HOST}scan/approve_from_dept/${storedpdfFileId}/`,
         headers: localHeader,
       });
   
@@ -44,5 +43,5 @@ export const Reject = (token,storedpdfFileId) => async (dispatch) => {
   };
   
 
-export const { postSuccess, ResetRejectedState } = reject.actions;
-export default reject.reducer;
+export const { postSuccess, ResetApproveState } = userapprove.actions;
+export default userapprove.reducer;

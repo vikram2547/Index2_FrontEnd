@@ -5,12 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { getLoginData } from "../store/login";
 
+
 const Loginpage = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.login.token);
-  const login = useSelector((state) => state.login.loginData);
+  const login = useSelector((state) => state.login.loginData?.department_admin);
 
   const {
     register,
@@ -28,9 +29,13 @@ const Loginpage = (props) => {
     dispatch(getLoginData(data));
   };
   useEffect(() => {
-    if (token) {
+    if (token && login == false) {
       localStorage.setItem("token", token);
       history.push("/app/main/dashboard");
+    }
+    else if(token && login == true) {
+      localStorage.setItem("token", token);
+      history.push("/app/main/user-dashboard");
     }
   }, [token, history]);
 

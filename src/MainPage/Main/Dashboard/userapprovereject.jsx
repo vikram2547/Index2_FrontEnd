@@ -4,10 +4,10 @@ import "@react-pdf-viewer/core/lib/styles/index.css"; // Required styles
 import { pdfjs } from "react-pdf";
 import { API_HOST } from "../../../base_URL/http";
 import { Link, useHistory } from "react-router-dom";
-import { Approve } from "../../../store/approve";
-import { Reject } from "../../../store/reject";
 import { useDispatch, useSelector } from "react-redux";
 import { message } from "antd";
+import { UserApprove } from "../../../store/userapprove";
+import { UserReject } from "../../../store/userreject";
 
 
 function UserApproveReject() {
@@ -19,7 +19,7 @@ function UserApproveReject() {
   const rejectResponse = useSelector((state) => state.reject.reject); // Get response from Reject action
 
   useEffect(() => {
-    const storedpdfFileId = localStorage.getItem("PdfFileId");
+    const storedpdfFileId = localStorage.getItem("UserPdfFileId");
     if (storedpdfFileId) {
       const fullFileUrl = `${API_HOST}scan/serve_tiff_as_pdf/${storedpdfFileId}/`;
       setPdfSrc(fullFileUrl); // Set the PDF URL
@@ -27,32 +27,39 @@ function UserApproveReject() {
   }, []);
 
   const dispatchApproveAction = () => {
-    const storedpdfFileId = localStorage.getItem("PdfFileId");
+    const storedpdfFileId = localStorage.getItem("UserPdfFileId");
     if (storedpdfFileId) {
-      dispatch(Approve(token, storedpdfFileId)); // Dispatch the Approve action
+      dispatch(UserApprove(token, storedpdfFileId)); // Dispatch the Approve action
     }
   };
 
   const dispatchRejectAction = () => {
-    const storedpdfFileId = localStorage.getItem("PdfFileId");
+    const storedpdfFileId = localStorage.getItem("UserPdfFileId");
     if (storedpdfFileId) {
-      dispatch(Reject(token, storedpdfFileId)); // Dispatch the Reject action
+      dispatch(UserReject(token, storedpdfFileId)); // Dispatch the Reject action
     }
   };
 
   useEffect(() => {
     if (approveResponse?.message) {
         message.success("File Approved.", 3);
-      history.push("/app/main/processed-files"); // Navigate to processed files
+        dispatch(ResetApproveState());
+      history.push("/app/main/userqcchecked-files"); // Navigate to processed files
     }
   }, [approveResponse]);
 
   useEffect(() => {
     if (rejectResponse?.message) {
         message.success("File Rejected.", 3);
-      history.push("/app/main/processed-files"); // Navigate to processed files
+        dispatch(ResetRejectedState());
+      history.push("/app/main/userqcchecked-files"); // Navigate to processed files
     }
   }, [rejectResponse]);
+
+  useEffect(() => {
+    dispatch(ResetApproveState());
+    dispatch(ResetRejectedState());
+}, [dispatch]);
 
   return (
     <div>

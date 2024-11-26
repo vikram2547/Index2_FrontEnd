@@ -4,8 +4,8 @@ import "@react-pdf-viewer/core/lib/styles/index.css"; // Required styles
 import { pdfjs } from "react-pdf";
 import { API_HOST } from "../../../base_URL/http";
 import { Link, useHistory } from "react-router-dom";
-import { Approve } from "../../../store/approve";
-import { Reject } from "../../../store/reject";
+import { Approve, ResetApproveState } from "../../../store/approve";
+import { Reject, ResetRejectedState } from "../../../store/reject";
 import { useDispatch, useSelector } from "react-redux";
 import { message } from "antd";
 
@@ -29,6 +29,7 @@ function ApproveReject() {
     const storedpdfFileId = localStorage.getItem("PdfFileId");
     if (storedpdfFileId) {
       dispatch(Approve(token, storedpdfFileId)); // Dispatch the Approve action
+      
     }
   };
 
@@ -42,6 +43,7 @@ function ApproveReject() {
   useEffect(() => {
     if (approveResponse?.message) {
       message.success("File Approved.", 3);
+      dispatch(ResetApproveState());
       history.push("/app/main/processed-files"); // Navigate to processed files
     }
   }, [approveResponse]);
@@ -49,9 +51,16 @@ function ApproveReject() {
   useEffect(() => {
     if (rejectResponse?.message) {
       message.success("File Rejected.", 3);
+      dispatch(ResetRejectedState());
       history.push("/app/main/processed-files"); // Navigate to processed files
     }
   }, [rejectResponse]);
+
+  useEffect(() => {
+    dispatch(ResetApproveState());
+    dispatch(ResetRejectedState());
+}, [dispatch]);
+
 
   return (
     <div>

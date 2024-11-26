@@ -15,7 +15,10 @@ export const approve = createSlice({
     postSuccess: (state, action) => {
       state.approve = action.payload;
     },
-   
+    
+    ResetApproveState(state) {
+      state.approve = null; 
+  },
   },
  
 });
@@ -40,5 +43,5 @@ export const Approve = (token, storedpdfFileId) => async (dispatch) => {
   };
   
 
-export const { postSuccess } = approve.actions;
+export const { postSuccess, ResetApproveState } = approve.actions;
 export default approve.reducer;

@@ -4,16 +4,16 @@ import { API_HOST, GET_API } from "../base_URL/http";
 import revertAll from "./action";
 
 const initialState = {
-    reject: null,
+    userreject: null,
 };
 
-export const reject = createSlice({
-  name: "reject",
+export const userreject = createSlice({
+  name: "userreject",
   initialState,
   reducers: {
   
     postSuccess: (state, action) => {
-      state.reject = action.payload;
+      state.userreject = action.payload;
     },
 
     ResetRejectedState(state) {
@@ -25,7 +25,7 @@ export const reject = createSlice({
 });
 
 // Get profile information data
-export const Reject = (token,storedpdfFileId) => async (dispatch) => {
+export const UserReject = (token,storedpdfFileId) => async (dispatch) => {
     const localHeader = {
       Authorization: `Token ${token}`,
     };
@@ -33,7 +33,7 @@ export const Reject = (token,storedpdfFileId) => async (dispatch) => {
     try {
       const res = await axios({
         method: GET_API,
-        url: `${API_HOST}scan/reject_file/${storedpdfFileId}/`,
+        url: `${API_HOST}scan//reject_from_dept/${storedpdfFileId}/`,
         headers: localHeader,
       });
   
@@ -44,5 +44,5 @@ export const Reject = (token,storedpdfFileId) => async (dispatch) => {
   };
   
 
-export const { postSuccess, ResetRejectedState } = reject.actions;
-export default reject.reducer;
+export const { postSuccess, ResetRejectedState } = userreject.actions;
+export default userreject.reducer;

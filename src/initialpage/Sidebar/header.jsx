@@ -5,13 +5,12 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { headerlogo, Avatar_21 } from "../../Entryfile/imagepath";
 import revertAll from "../../store/action";
 
 const Header = (props) => {
   const dispatch = useDispatch();
 
-  const id = useSelector((state) => state.login?.user?.id);
+  const officeName = useSelector((state) => state.login.loginData?.office_name);
 
   const handlesidebar = () => {
     document.body.classList.toggle("mini-sidebar");
@@ -46,9 +45,9 @@ const Header = (props) => {
         </span>
       </Link>
       {/* Header Title */}
-      {/* <div className="page-title-box">
-        <h3>Kash IT Solutions</h3>
-      </div> */}
+      <div className="page-title-box">
+        <h3>{officeName}</h3>
+      </div>
       {/* /Header Title */}
       <Link
         id="mobile_btn"
